@@ -1,8 +1,7 @@
 from clk_driver import clk_driver
 from sdram import *
-from sdram_cntl import sdram_cntl
-from host_intf import HostIntf
-from sd_intf import *
+from sdram_cntl import *
+
 
 
 def test_readwrite(host_intf):
