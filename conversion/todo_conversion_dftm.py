@@ -1,6 +1,6 @@
 from myhdl import *
 
-from dftm import dftm
+from dftm  import dftm
 
 def convert_inc(hdl):
     """Convert inc block to VHDL."""

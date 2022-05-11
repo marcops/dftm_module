@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, 'source')
+
 from clk_driver import clk_driver
 from sdram import *
 from sdram_cntl import *

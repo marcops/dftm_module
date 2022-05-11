@@ -1,11 +1,14 @@
 # SDRAM_Controller
 
-This repository is created to host the work I done for Google Summer of Code 2015. It contains a Sdram controller and a model that can be used to test the controller.
+This repository is created to host the work I done for my Phd. It contains a DFTM, Sdram controller and a model that can be used to test the controller.
 All the designs are written in MyHDL which is a HDL written in Python. Details and manual to use MyHDL can be found on http://myhdl.org/
+
+![alt tag](docs/dftm.jpg)
+
 
 ## Prerequistes ##
 
-* Python 2
+* Python 3
 * MyHDL
 
 ## Instructions ##
