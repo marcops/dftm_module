@@ -133,8 +133,10 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
     bank_s = Signal(intbv(0)[ba_len_c:])
     row_s = Signal(intbv(0)[row_len_c:])
     col_s = Signal(intbv(0)[col_len_c:])
-        
-    dftm_0 = dftm(clk_i, host_intf, cmd_x, sd_intf)
+
+
+    ecc = Signal(intbv(0)[2:0])
+    dftm_0 = dftm(clk_i, host_intf, cmd_x, sd_intf, ecc)
     # pin assignment for SDRAM
     @always_comb
     def sdram_pin_map():
