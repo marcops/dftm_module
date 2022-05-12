@@ -1,25 +1,22 @@
-# SDRAM_Controller
+# DFTM Memory Controller
 
-This repository is created to host the work I done for my Phd. It contains a DFTM, Sdram controller and a model that can be used to test the controller.
-All the designs are written in MyHDL which is a HDL written in Python. Details and manual to use MyHDL can be found on http://myhdl.org/
-
+This repository is created to host the work I done for my PhD. 
+It contains a Dynamic Fault Tolerance Module, Sdram controller and a small memory ram example.
 ![alt tag](docs/dftm.jpg)
 
-
-## Prerequistes ##
+All the designs are written in MyHDL which is a HDL written in Python. Details and manual to use MyHDL can be found on http://myhdl.org/
+## Pre-requirements ##
 
 * Python 3
 * MyHDL
 
 ## Instructions ##
 
-To run the tests myhdl and SDRAM_Controller should be included in the PYTHONPATH
+All necessary To run the tests and convert the source can be execute from the makefile
 ```bash
-export PYTHONPATH = $PYTHONPATH:<path to myhdl>:<path to SDRAM_Controller>
+make test_sdram_cntl 
 
-python <path to SDRAM_Controller>/test_sdram.py
-
-python <path to SDRAM_Controller>/test_controller.py
+make gen_vhdl_sdram_cntl
 ```
 ## Simulator ##
 
@@ -44,15 +41,15 @@ This simulator prints several types of messages to the console.
 
 ### Simulator Test ###
 
-Simulator test is availiable in the file test_sdram.py . This test can be run using the following command.
+Simulator test is available in the file test/sdram_ctrl.py . This test can be run using the following command.
 ```bash
-	python test_sdram.py
+make test_sdram_cntl 
 ```
 The test uses the transactors defined in sd_intf.py file to do the read and write. It manually drives the input ports of the sdram and read the value from inout port.  
 
 ## Controller ##
 
-The controller is written reffering the VHDL designed by xesscorp which can be found on https://github.com/xesscorp/VHDL_Lib/blob/master/SdramCntl.vhd
+The controller is written refering the VHDL designed by xesscorp which can be found on https://github.com/xesscorp/VHDL_Lib/blob/master/SdramCntl.vhd
 
 Sdram controller make it easy to access the sdram. The host logic can use the sdram more likely an sram because of the controller. It takes care of row refreshes and gives an easy to use interface for the host logic to access the sdram. Host side interface of the controller is availiable in the file host_intf.py
 
@@ -86,7 +83,7 @@ The test uses the transactors defined in host_intf.py file to do the read and wr
 
 MyHDL offeres a very simple interface to perform the conversion from MyHDL to either Verilog or VHDL. The file Converion.py uses these interfaces to generate both Verilog and VHDL convertions of the SdramCntl.py. Following command will generate MySdramCntl.v, MySdramCntl.vhd and pck_myhdl_10.vhd files.
 ```bash
-	python Conversion.py
+make gen_vhdl_sdram_cntl
 ```
 pck_myhdl_10.vhd is a VHDL library file which is required by MySdramCntl.vhd (The name of the file may change depends on the MyHDL version being used.)
 
