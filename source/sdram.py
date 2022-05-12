@@ -112,7 +112,7 @@ def sdram(clk, sd_intf, show_command=False):
         if not curr_state[bs.val].active_row:
             print( " SDRAM : [ERROR] A row should be activated before trying to read")
         else:
-            print( " SDRAM : [READ]", addr, " Commnad registered ")
+            print( " SDRAM : [READ]", addr, " Command registered ")
 
     def write(bs, addr):
         if not curr_state[bs.val].active_row:

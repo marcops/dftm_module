@@ -23,7 +23,7 @@ class HostIntf(object):
     def write(self, addr, data):
         self.addr_i.next = addr
         self.data_i.next = data
-        yield delay(5)
+        #yield delay(5)
         self.wr_i.next = 1
 
     def nop(self):

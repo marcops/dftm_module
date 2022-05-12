@@ -135,8 +135,6 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
     col_s = Signal(intbv(0)[col_len_c:])
 
 
-    ecc = Signal(intbv(0)[2:0])
-    dftm_0 = dftm(clk_i, host_intf, cmd_x, sd_intf, ecc)
     # pin assignment for SDRAM
     @always_comb
     def sdram_pin_map():
@@ -384,7 +382,7 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
             activerow_r[index].next = activerow_x[index]
             activeflag_r[index].next = activeflag_x[index]
 
-    return dftm_0, comb_func, seq_func, sdram_pin_map, host_pin_map, extract_addr, do_active
+    return comb_func, seq_func, sdram_pin_map, host_pin_map, extract_addr, do_active
 
     
     
