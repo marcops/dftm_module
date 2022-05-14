@@ -46,7 +46,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
 
             if host_intf_sdram.done_o:
                 host_intf.data_o.next = host_intf_sdram.data_o                
-                decoded_data, decode_ok = ecc.decoder(host_intf.data_i, current_encode)
+                decode_ok = ecc.decoder_check(host_intf.data_i, current_encode)
                 """FAKE ERR WHEN 120 """
                 decode_ok = not (host_intf.rd_i and host_intf.addr_i == 120)
                 
@@ -63,12 +63,12 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                         host_intf_sdram.rd_i.next = False
                         host_intf_sdram.wr_i.next = False
                     else:
-                        host_intf.done_o.next = host_intf_sdram.done_o    
+                        host_intf.done_o.next = ecc.decoder(host_intf_sdram.done_o, current_encode)
                 else:
-                    host_intf.done_o.next = host_intf_sdram.done_o
+                    host_intf.done_o.next = ecc.decoder(host_intf_sdram.done_o, current_encode)
 
             else:
-                host_intf.done_o.next = host_intf_sdram.done_o
+                host_intf.done_o.next = ecc.decoder(host_intf_sdram.done_o, current_encode)
                 host_intf.data_o.next = host_intf_sdram.data_o
                 
         else:
@@ -86,7 +86,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                 host_intf_sdram.rd_i.next = 0
                 if host_intf_sdram.done_o:
                     current_recoding_mode.next = RECODING_MODE.WRITE
-                    recode_data_o.next, decoded_ok = ecc.decoder(host_intf_sdram.data_o, recode_current_ecc)
+                    recode_data_o.next = ecc.decoder(host_intf_sdram.data_o, recode_current_ecc)
                     """TODO IGNORING THE DECODE ERROR """
                     print("RECODING READ ", host_intf_sdram.data_o)
 
