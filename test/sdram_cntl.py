@@ -9,23 +9,27 @@ from sdram_cntl import *
 
 def test_readwrite(host_intf):
 
-    @instance
-    def test():
-        yield delay(140)
-        yield host_intf.write(120, 23)
+    def write(addr,data):
+        yield host_intf.write(addr, data)
         yield host_intf.done_o.posedge
         yield host_intf.nop()
         yield delay(5)
-        yield host_intf.read(120)
+        print("[CPU-WRITE] addr: " , hex(addr) , ", data: ", hex(data))
+
+    def read(addr):
+        yield host_intf.read(addr)
         yield host_intf.done_o.posedge
-        yield delay(140)
-        yield host_intf.write(290, 21)
-        yield host_intf.done_o.posedge
-        yield host_intf.nop()
-
-
-
-        print( "Data Value : ", host_intf.data_o, " clk : ", now())
+        #yield delay(140)
+        print("[CPU-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
+        
+    @instance
+    def test():
+        yield delay(140)    
+        yield write(120, 23)        
+        yield read(120)
+        yield read(5)
+        yield write(5, 3)        
+        yield read(5)
     return test
 
 clk_i = Signal(bool(0))

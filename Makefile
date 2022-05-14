@@ -1,8 +1,8 @@
 test_dftm:
 	python3 test/dftm.py
 
-gen_vhdl_sdram_cntl:
-	python3 conversion/sdram_cntl.py
+gen_vhdl_dftm:
+	python3 conversion/dftm.py
 	mv *.vhd vhd/
 
 clean:

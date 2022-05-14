@@ -1,4 +1,6 @@
 import sys
+
+from myhdl import delay, instance
 sys.path.insert(0, 'source')
 
 from clk_driver import clk_driver
@@ -8,21 +10,29 @@ from dftm import *
 
 def test_readwrite(host_intf):
 
+    def write(addr,data):
+        yield host_intf.write(addr, data)
+        yield host_intf.done_o.posedge
+        yield host_intf.nop()
+        yield delay(3)
+        print("[CPU-WRITE] addr: " , hex(addr) , ", data: ", hex(data))
+
+    def read(addr):
+        yield host_intf.read(addr)
+        yield host_intf.done_o.posedge
+        yield delay(1)
+        print("[CPU-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
+        
     @instance
     def test():
-        yield delay(140)
-        yield host_intf.write(120, 23)
-        yield host_intf.done_o.posedge
-        yield host_intf.nop()
-        yield delay(50)
-        yield host_intf.read(120)
-        yield host_intf.done_o.posedge
-        yield delay(140)
-        yield host_intf.write(290, 21)
-        yield host_intf.done_o.posedge
-        yield host_intf.nop()
-
-        print( "Data Value : ", host_intf.data_o, " clk : ", now())
+        yield delay(140)    
+        yield write(120, 23)      
+        yield read(120)     
+        yield read(5)     
+        yield write(5, 3)    
+        yield read(5)
+        yield read(1)
+            
     return test
 
 clk_i = Signal(bool(0))
@@ -41,4 +51,4 @@ dftm_Inst = dftm(clk_i, host_intf_Inst, host_intf_sdram_Inst)
 test_readWrite_Inst = test_readwrite(host_intf_Inst)
 
 sim = Simulation(clkDriver_Inst, sdram_Inst, sdramCntl_Inst, dftm_Inst, test_readWrite_Inst)
-sim.run(7500)
+sim.run(7900)
