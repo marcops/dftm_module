@@ -215,8 +215,11 @@ class State:
                 self.state = states.Read_rdy
                 self.wait = 0
                 if self.active_row:
-                    self.data = self.memory[self.active_row * 10000 + self.addr]
-                print( " STATE : [READ] Data Ready @ ", now(), " value : ", self.data)
+                    if self.active_row * 10000 + self.addr in self.memory:
+                        self.data = self.memory[self.active_row * 10000 + self.addr]
+                    else:
+                        self.data = 0
+                print( " STATE : [READ] Data Ready @ ", now(), ", add :", self.addr,  " value : ", self.data)
 
         elif self.state == states.Read_rdy:
                 self.state = states.Idle
