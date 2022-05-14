@@ -6,4 +6,4 @@ class ecc():
         return data
 
     def decoder(data, type):
-        return True
+        return data, True

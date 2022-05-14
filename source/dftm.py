@@ -10,7 +10,7 @@ from enum import Enum
 @block
 def dftm(clk_i, host_intf, host_intf_sdram):
     """INTERNAL RAM START"""
-    IRAM_PAGE_SIZE = 256
+    IRAM_PAGE_SIZE = 1
     IRAM_DATA_SIZE = 3
     IRAM_ADDR_AMOUNT = 256
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
@@ -24,6 +24,10 @@ def dftm(clk_i, host_intf, host_intf_sdram):
 
     recode_position = Signal(intbv(0)[24:]) 
     recode_count = Signal(intbv(0)[16:]) 
+    recode_data_o = Signal(intbv(0)[16:])
+
+    recode_current_ecc = Signal(intbv(0)[IRAM_DATA_SIZE:])
+
     current_recoding_mode = Signal(RECODING_MODE.READ)
 
     """END RECODE"""
@@ -32,48 +36,71 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     def main():        
         if current_operation_mode == OPERATION_MODE.NORMAL:
             iram_current_position = dftm_ram.get_position(host_intf.addr_i, IRAM_PAGE_SIZE)
-            page_encode = ram[iram_current_position]
+            ram_inf = ram[iram_current_position]
+            current_encode = dftm_ram.get_encode(ram_inf)
 
             host_intf_sdram.addr_i.next = host_intf.addr_i
-            host_intf_sdram.data_i.next = ecc.encoder(host_intf.data_i, page_encode)
+            host_intf_sdram.data_i.next = ecc.encoder(host_intf.data_i, current_encode)
             host_intf_sdram.rd_i.next = host_intf.rd_i
             host_intf_sdram.wr_i.next = host_intf.wr_i
 
             if host_intf_sdram.done_o:
                 host_intf.data_o.next = host_intf_sdram.data_o                
-                decode_ok = ecc.decoder(host_intf.data_i, page_encode)
+                decoded_data, decode_ok = ecc.decoder(host_intf.data_i, current_encode)
                 """FAKE ERR WHEN 120 """
                 decode_ok = not (host_intf.rd_i and host_intf.addr_i == 120)
-
+                
                 if decode_ok == False:
                     print("JOIN STATE FAKE")
-                    current_operation_mode.next = OPERATION_MODE.RECODING
-                    current_recoding_mode.next = RECODING_MODE.READ
-                    recode_position.next = iram_current_position
-                    recode_count.next = 0
-                    host_intf.done_o.next = False
-                    host_intf_sdram.rd_i.next = False
-                    host_intf_sdram.wr_i.next = False
+                    recode = dftm_ram.get_next_encode(current_encode) != current_encode
+                    if recode:
+                        current_operation_mode.next = OPERATION_MODE.RECODING
+                        current_recoding_mode.next = RECODING_MODE.READ
+                        recode_position.next = iram_current_position
+                        recode_current_ecc.next = current_encode
+                        recode_count.next = 0
+                        host_intf.done_o.next = False
+                        host_intf_sdram.rd_i.next = False
+                        host_intf_sdram.wr_i.next = False
+                    else:
+                        host_intf.done_o.next = host_intf_sdram.done_o    
                 else:
                     host_intf.done_o.next = host_intf_sdram.done_o
+
             else:
                 host_intf.done_o.next = host_intf_sdram.done_o
                 host_intf.data_o.next = host_intf_sdram.data_o
+                
         else:
-            print("RECODING " , recode_position)
+            recoding_current_address =  (recode_position * IRAM_PAGE_SIZE) + recode_count
+            print("RECODING " , recode_position, " - ", recode_count, " - ", recoding_current_address)
+
             if current_recoding_mode == RECODING_MODE.READ:
                 print(current_recoding_mode)
+                host_intf_sdram.addr_i.next = recoding_current_address
+                host_intf_sdram.rd_i.next = 1
                 current_recoding_mode.next = RECODING_MODE.WAIT_READ
+
             if current_recoding_mode == RECODING_MODE.WAIT_READ:
                 print(current_recoding_mode)
-                current_recoding_mode.next = RECODING_MODE.WRITE
+                host_intf_sdram.rd_i.next = 0
+                if host_intf_sdram.done_o:
+                    current_recoding_mode.next = RECODING_MODE.WRITE
+                    recode_data_o.next, decoded_ok = ecc.decoder(host_intf_sdram.data_o, recode_current_ecc)
+                    """TODO IGNORING THE DECODE ERROR """
+                    print("RECODING READ ", host_intf_sdram.data_o)
+
             if current_recoding_mode == RECODING_MODE.WRITE:
                 print(current_recoding_mode)
                 current_recoding_mode.next = RECODING_MODE.WAIT_WRITE
+
             if current_recoding_mode == RECODING_MODE.WAIT_WRITE:
                 print(current_recoding_mode)
-                host_intf.done_o.next = True
-                current_operation_mode.next = OPERATION_MODE.NORMAL
-
+                if recode_count > IRAM_PAGE_SIZE:
+                    host_intf.done_o.next = True
+                    current_operation_mode.next = OPERATION_MODE.NORMAL
+                else:
+                    current_recoding_mode.next = RECODING_MODE.READ
+                    recode_count.next = recode_count +1
 
     return main
