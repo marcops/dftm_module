@@ -51,4 +51,4 @@ dftm_Inst = dftm(clk_i, host_intf_Inst, host_intf_sdram_Inst)
 test_readWrite_Inst = test_readwrite(host_intf_Inst)
 
 sim = Simulation(clkDriver_Inst, sdram_Inst, sdramCntl_Inst, dftm_Inst, test_readWrite_Inst)
-sim.run(7900)
+sim.run(5000)
