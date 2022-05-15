@@ -1,15 +1,10 @@
 from math import ceil
-#from turtle import position
-
-from numpy import True_
 from sd_intf import *
 from host_intf import *
-from dftm import *
 
-@block
+
 def sdram_cntl(clk_i, host_intf, sd_intf):
-    
-    
+
     # commands to SDRAM    ce ras cas we dqml dqmh
     nop_cmd_c = int(sd_intf.SDRAM_NOP_CMD_C)        # intbv("011100")[6:]  #0,1,1,1,0,0
     active_cmd_c = int(sd_intf.SDRAM_ACTIVE_CMD_C)  # intbv("001100")[6:]  #0,0,1,1,0,0
@@ -56,7 +51,7 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
     ba_len_c = 2
     col_len_c = int(log(sd_intf.SDRAM_NCOLS_C, 2))
     row_len_c = int(log(sd_intf.SDRAM_NROWS_C, 2))
-    
+
     # states of the SDRAM controller state machine
     cntlstatetype = enum(
         'INITWAIT',         # initialization - waiting for power-on initialization to complete.
@@ -109,7 +104,6 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
     sdramdata_r = Signal(intbv(0)[sd_intf.data_width:])
     sdramdata_x = Signal(intbv(0)[sd_intf.data_width:])
 
-
     sdatadir_r = Signal(input_c)
     sdatadir_x = Signal(input_c)
 
@@ -133,7 +127,6 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
     bank_s = Signal(intbv(0)[ba_len_c:])
     row_s = Signal(intbv(0)[row_len_c:])
     col_s = Signal(intbv(0)[col_len_c:])
-
 
     # pin assignment for SDRAM
     @always_comb
@@ -161,7 +154,7 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
         host_intf.rdPending_o.next = rd_in_progress_s
         sdata_x.next = host_intf.data_i
 
-   # extract bank, row and column from controller address
+    # extract bank, row and column from controller address
     @always_comb
     def extract_addr():
         # extract bank
@@ -207,6 +200,7 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
 
     @always_comb
     def comb_func():
+
         rdpipeline_x.next = concat(nop_c, rdpipeline_r[cas_cycles_c+2:1])
         wrpipeline_x.next = intbv(nop_c)[cas_cycles_c+2:]
 
@@ -383,9 +377,3 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
             activeflag_r[index].next = activeflag_x[index]
 
     return comb_func, seq_func, sdram_pin_map, host_pin_map, extract_addr, do_active
-
-    
-    
-
-    
-

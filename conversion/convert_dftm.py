@@ -3,8 +3,8 @@ sys.path.insert(0, 'source')
 
 from myhdl import *
 #from clk_driver import clk_driver
-from dftm import *
-from sdram_cntl import *
+from conversion.convert_dftm import *
+from conversion.convert_sdram_cntl import *
 def convert_memory_controller(hdl):
     clk_i = Signal(bool(0))
     #rst_i = ResetSignal(0, active=1, isasync=True)

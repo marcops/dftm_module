@@ -9,6 +9,9 @@ from enum import Enum
 
 @block
 def dftm(clk_i, host_intf, host_intf_sdram):
+    OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
+    current_operation_mode = Signal(OPERATION_MODE.NORMAL)
+    
     """INTERNAL RAM START"""
     IRAM_PAGE_SIZE = 1
     IRAM_DATA_SIZE = 3
@@ -16,12 +19,8 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
     
-    OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
-    current_operation_mode = Signal(OPERATION_MODE.NORMAL)
-    
     """RECODE """
     RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE')
-
     recode_position = Signal(intbv(0)[24:]) 
     recode_count = Signal(intbv(0)[16:]) 
     recode_data_o = Signal(intbv(0)[16:])
@@ -32,6 +31,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     @always(clk_i.posedge)
     def main():        
         if current_operation_mode == OPERATION_MODE.NORMAL:
+            
             iram_current_position = dftm_ram.get_position(host_intf.addr_i, IRAM_PAGE_SIZE)
             ram_inf = ram[iram_current_position]
             current_encode = dftm_ram.get_encode(ram_inf)
