@@ -16,7 +16,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
     
-    OPERATION_MODE = enum('NORMAL','RECODING')
+    OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
     current_operation_mode = Signal(OPERATION_MODE.NORMAL)
     
     """RECODE """
@@ -25,11 +25,8 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     recode_position = Signal(intbv(0)[24:]) 
     recode_count = Signal(intbv(0)[16:]) 
     recode_data_o = Signal(intbv(0)[16:])
-
     recode_current_ecc = Signal(intbv(0)[IRAM_DATA_SIZE:])
-
     current_recoding_mode = Signal(RECODING_MODE.READ)
-
     """END RECODE"""
 
     @always(clk_i.posedge)
@@ -54,7 +51,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                     print("JOIN STATE FAKE")
                     recode = dftm_ram.get_next_encode(current_encode) != current_encode
                     if recode:
-                        current_operation_mode.next = OPERATION_MODE.RECODING
+                        current_operation_mode.next = OPERATION_MODE.RECODING_UP
                         current_recoding_mode.next = RECODING_MODE.READ
                         recode_position.next = iram_current_position
                         recode_current_ecc.next = current_encode
