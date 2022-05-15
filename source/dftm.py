@@ -89,15 +89,25 @@ def dftm(clk_i, host_intf, host_intf_sdram):
 
             if current_recoding_mode == RECODING_MODE.WRITE:
                 print(current_recoding_mode)
+                host_intf_sdram.addr_i.next = recoding_current_address
+                host_intf_sdram.data_i.next = ecc.encoder(recode_data_o, dftm_ram.get_next_encode(recode_current_ecc))
                 current_recoding_mode.next = RECODING_MODE.WAIT_WRITE
 
             if current_recoding_mode == RECODING_MODE.WAIT_WRITE:
                 print(current_recoding_mode)
-                if recode_count > IRAM_PAGE_SIZE:
-                    host_intf.done_o.next = True
-                    current_operation_mode.next = OPERATION_MODE.NORMAL
-                else:
-                    current_recoding_mode.next = RECODING_MODE.READ
-                    recode_count.next = recode_count +1
+                host_intf_sdram.wr_i.next = 1
+
+                if host_intf_sdram.done_o:
+                    host_intf_sdram.rd_i.next = 0
+                    host_intf_sdram.wr_i.next = 0
+                    r_count =  recode_count +1
+                    if r_count < IRAM_PAGE_SIZE:
+                        current_recoding_mode.next = RECODING_MODE.READ
+                        recode_count.next = r_count
+                    else:
+                        """RECODING DONE"""
+                        host_intf.done_o.next = True
+                        current_operation_mode.next = OPERATION_MODE.NORMAL
+                    
 
     return main
