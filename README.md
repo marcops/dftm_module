@@ -4,8 +4,7 @@ This repository is created to host the work I done for my PhD.
 It contains a Dynamic Fault Tolerance Module, Sdram controller and a small memory ram example.
 ![alt tag](docs/dftm.jpg)
 
-All the designs are written in MyHDL which is a HDL written in Python. Details and manual to use MyHDL can be found on http://myhdl.org/ 
-This version is based on source at https://github.com/udara28/SDRAM_Controller
+All the designs are written in MyHDL which is a HDL written in Python. Details and manual to use MyHDL can be found on http://myhdl.org/
 ## Pre-requirements ##
 
 * Python 3

@@ -9,9 +9,6 @@ from enum import Enum
 
 @block
 def dftm(clk_i, host_intf, host_intf_sdram):
-    OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
-    current_operation_mode = Signal(OPERATION_MODE.NORMAL)
-    
     """INTERNAL RAM START"""
     IRAM_PAGE_SIZE = 1
     IRAM_DATA_SIZE = 3
@@ -19,8 +16,12 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
     
+    OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
+    current_operation_mode = Signal(OPERATION_MODE.NORMAL)
+    
     """RECODE """
     RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE')
+
     recode_position = Signal(intbv(0)[24:]) 
     recode_count = Signal(intbv(0)[16:]) 
     recode_data_o = Signal(intbv(0)[16:])
@@ -31,7 +32,6 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     @always(clk_i.posedge)
     def main():        
         if current_operation_mode == OPERATION_MODE.NORMAL:
-            
             iram_current_position = dftm_ram.get_position(host_intf.addr_i, IRAM_PAGE_SIZE)
             ram_inf = ram[iram_current_position]
             current_encode = dftm_ram.get_encode(ram_inf)
@@ -89,25 +89,15 @@ def dftm(clk_i, host_intf, host_intf_sdram):
 
             if current_recoding_mode == RECODING_MODE.WRITE:
                 print(current_recoding_mode)
-                host_intf_sdram.addr_i.next = recoding_current_address
-                host_intf_sdram.data_i.next = ecc.encoder(recode_data_o, dftm_ram.get_next_encode(recode_current_ecc))
                 current_recoding_mode.next = RECODING_MODE.WAIT_WRITE
 
             if current_recoding_mode == RECODING_MODE.WAIT_WRITE:
                 print(current_recoding_mode)
-                host_intf_sdram.wr_i.next = 1
-
-                if host_intf_sdram.done_o:
-                    host_intf_sdram.rd_i.next = 0
-                    host_intf_sdram.wr_i.next = 0
-                    r_count =  recode_count +1
-                    if r_count < IRAM_PAGE_SIZE:
-                        current_recoding_mode.next = RECODING_MODE.READ
-                        recode_count.next = r_count
-                    else:
-                        """RECODING DONE"""
-                        host_intf.done_o.next = True
-                        current_operation_mode.next = OPERATION_MODE.NORMAL
-                    
+                if recode_count > IRAM_PAGE_SIZE:
+                    host_intf.done_o.next = True
+                    current_operation_mode.next = OPERATION_MODE.NORMAL
+                else:
+                    current_recoding_mode.next = RECODING_MODE.READ
+                    recode_count.next = recode_count +1
 
     return main

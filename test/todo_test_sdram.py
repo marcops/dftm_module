@@ -27,7 +27,7 @@ def test_readwrite(clk, sd_intf):
 
         yield sd_intf.nop(clk)
         yield delay(4)
-        print "sd_intf dq = ", sd_intf.dq.val, " @ ", now()
+        print ("sd_intf dq = ", sd_intf.dq.val, " @ ", now())
 
     return test
 
