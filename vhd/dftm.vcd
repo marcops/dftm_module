@@ -1,5 +1,5 @@
 $date
-    Sun May 15 12:05:25 2022
+    Sun May 15 14:11:22 2022
 $end
 $version
     MyHDL 0.11
@@ -13,278 +13,279 @@ $var reg 1 ! clk_i $end
 $var string 2 " current_operation_mode $end
 $var string 2 # current_recoding_mode $end
 $var reg 16 $ recode_count $end
-$var reg 3 % recode_current_ecc $end
-$var reg 16 & recode_data_o $end
+$var reg 16 % recode_data_o $end
+$var reg 3 & recode_from_ecc $end
 $var reg 24 ' recode_position $end
-$var reg 24 ( host_intf_addr_i $end
-$var reg 24 ) host_intf_sdram_addr_i $end
-$var reg 16 * host_intf_sdram_data_i $end
-$var reg 16 + host_intf_data_i $end
-$var reg 1 , host_intf_sdram_rd_i $end
-$var reg 1 - host_intf_rd_i $end
-$var reg 1 . host_intf_sdram_wr_i $end
-$var reg 1 / host_intf_wr_i $end
-$var reg 1 0 host_intf_sdram_done_o $end
-$var reg 16 1 host_intf_data_o $end
-$var reg 16 2 host_intf_sdram_data_o $end
-$var reg 1 3 host_intf_done_o $end
+$var reg 3 ( recode_to_ecc $end
+$var reg 24 ) host_intf_addr_i $end
+$var reg 24 * host_intf_sdram_addr_i $end
+$var reg 16 + host_intf_sdram_data_i $end
+$var reg 16 , host_intf_data_i $end
+$var reg 1 - host_intf_sdram_rd_i $end
+$var reg 1 . host_intf_rd_i $end
+$var reg 1 / host_intf_sdram_wr_i $end
+$var reg 1 0 host_intf_wr_i $end
+$var reg 1 1 host_intf_sdram_done_o $end
+$var reg 16 2 host_intf_data_o $end
+$var reg 16 3 host_intf_sdram_data_o $end
+$var reg 1 4 host_intf_done_o $end
 $scope module ram $end
-$var reg 3 4 ram(0) $end
-$var reg 3 5 ram(1) $end
-$var reg 3 6 ram(2) $end
-$var reg 3 7 ram(3) $end
-$var reg 3 8 ram(4) $end
-$var reg 3 9 ram(5) $end
-$var reg 3 : ram(6) $end
-$var reg 3 ; ram(7) $end
-$var reg 3 < ram(8) $end
-$var reg 3 = ram(9) $end
-$var reg 3 > ram(10) $end
-$var reg 3 ? ram(11) $end
-$var reg 3 @ ram(12) $end
-$var reg 3 A ram(13) $end
-$var reg 3 B ram(14) $end
-$var reg 3 C ram(15) $end
-$var reg 3 D ram(16) $end
-$var reg 3 E ram(17) $end
-$var reg 3 F ram(18) $end
-$var reg 3 G ram(19) $end
-$var reg 3 H ram(20) $end
-$var reg 3 I ram(21) $end
-$var reg 3 J ram(22) $end
-$var reg 3 K ram(23) $end
-$var reg 3 L ram(24) $end
-$var reg 3 M ram(25) $end
-$var reg 3 N ram(26) $end
-$var reg 3 O ram(27) $end
-$var reg 3 P ram(28) $end
-$var reg 3 Q ram(29) $end
-$var reg 3 R ram(30) $end
-$var reg 3 S ram(31) $end
-$var reg 3 T ram(32) $end
-$var reg 3 U ram(33) $end
-$var reg 3 V ram(34) $end
-$var reg 3 W ram(35) $end
-$var reg 3 X ram(36) $end
-$var reg 3 Y ram(37) $end
-$var reg 3 Z ram(38) $end
-$var reg 3 [ ram(39) $end
-$var reg 3 \ ram(40) $end
-$var reg 3 ] ram(41) $end
-$var reg 3 ^ ram(42) $end
-$var reg 3 _ ram(43) $end
-$var reg 3 ` ram(44) $end
-$var reg 3 a ram(45) $end
-$var reg 3 b ram(46) $end
-$var reg 3 c ram(47) $end
-$var reg 3 d ram(48) $end
-$var reg 3 e ram(49) $end
-$var reg 3 f ram(50) $end
-$var reg 3 g ram(51) $end
-$var reg 3 h ram(52) $end
-$var reg 3 i ram(53) $end
-$var reg 3 j ram(54) $end
-$var reg 3 k ram(55) $end
-$var reg 3 l ram(56) $end
-$var reg 3 m ram(57) $end
-$var reg 3 n ram(58) $end
-$var reg 3 o ram(59) $end
-$var reg 3 p ram(60) $end
-$var reg 3 q ram(61) $end
-$var reg 3 r ram(62) $end
-$var reg 3 s ram(63) $end
-$var reg 3 t ram(64) $end
-$var reg 3 u ram(65) $end
-$var reg 3 v ram(66) $end
-$var reg 3 w ram(67) $end
-$var reg 3 x ram(68) $end
-$var reg 3 y ram(69) $end
-$var reg 3 z ram(70) $end
-$var reg 3 { ram(71) $end
-$var reg 3 | ram(72) $end
-$var reg 3 } ram(73) $end
-$var reg 3 ~ ram(74) $end
-$var reg 3 "! ram(75) $end
-$var reg 3 "" ram(76) $end
-$var reg 3 "# ram(77) $end
-$var reg 3 "$ ram(78) $end
-$var reg 3 "% ram(79) $end
-$var reg 3 "& ram(80) $end
-$var reg 3 "' ram(81) $end
-$var reg 3 "( ram(82) $end
-$var reg 3 ") ram(83) $end
-$var reg 3 "* ram(84) $end
-$var reg 3 "+ ram(85) $end
-$var reg 3 ", ram(86) $end
-$var reg 3 "- ram(87) $end
-$var reg 3 ". ram(88) $end
-$var reg 3 "/ ram(89) $end
-$var reg 3 "0 ram(90) $end
-$var reg 3 "1 ram(91) $end
-$var reg 3 "2 ram(92) $end
-$var reg 3 "3 ram(93) $end
-$var reg 3 "4 ram(94) $end
-$var reg 3 "5 ram(95) $end
-$var reg 3 "6 ram(96) $end
-$var reg 3 "7 ram(97) $end
-$var reg 3 "8 ram(98) $end
-$var reg 3 "9 ram(99) $end
-$var reg 3 ": ram(100) $end
-$var reg 3 "; ram(101) $end
-$var reg 3 "< ram(102) $end
-$var reg 3 "= ram(103) $end
-$var reg 3 "> ram(104) $end
-$var reg 3 "? ram(105) $end
-$var reg 3 "@ ram(106) $end
-$var reg 3 "A ram(107) $end
-$var reg 3 "B ram(108) $end
-$var reg 3 "C ram(109) $end
-$var reg 3 "D ram(110) $end
-$var reg 3 "E ram(111) $end
-$var reg 3 "F ram(112) $end
-$var reg 3 "G ram(113) $end
-$var reg 3 "H ram(114) $end
-$var reg 3 "I ram(115) $end
-$var reg 3 "J ram(116) $end
-$var reg 3 "K ram(117) $end
-$var reg 3 "L ram(118) $end
-$var reg 3 "M ram(119) $end
-$var reg 3 "N ram(120) $end
-$var reg 3 "O ram(121) $end
-$var reg 3 "P ram(122) $end
-$var reg 3 "Q ram(123) $end
-$var reg 3 "R ram(124) $end
-$var reg 3 "S ram(125) $end
-$var reg 3 "T ram(126) $end
-$var reg 3 "U ram(127) $end
-$var reg 3 "V ram(128) $end
-$var reg 3 "W ram(129) $end
-$var reg 3 "X ram(130) $end
-$var reg 3 "Y ram(131) $end
-$var reg 3 "Z ram(132) $end
-$var reg 3 "[ ram(133) $end
-$var reg 3 "\ ram(134) $end
-$var reg 3 "] ram(135) $end
-$var reg 3 "^ ram(136) $end
-$var reg 3 "_ ram(137) $end
-$var reg 3 "` ram(138) $end
-$var reg 3 "a ram(139) $end
-$var reg 3 "b ram(140) $end
-$var reg 3 "c ram(141) $end
-$var reg 3 "d ram(142) $end
-$var reg 3 "e ram(143) $end
-$var reg 3 "f ram(144) $end
-$var reg 3 "g ram(145) $end
-$var reg 3 "h ram(146) $end
-$var reg 3 "i ram(147) $end
-$var reg 3 "j ram(148) $end
-$var reg 3 "k ram(149) $end
-$var reg 3 "l ram(150) $end
-$var reg 3 "m ram(151) $end
-$var reg 3 "n ram(152) $end
-$var reg 3 "o ram(153) $end
-$var reg 3 "p ram(154) $end
-$var reg 3 "q ram(155) $end
-$var reg 3 "r ram(156) $end
-$var reg 3 "s ram(157) $end
-$var reg 3 "t ram(158) $end
-$var reg 3 "u ram(159) $end
-$var reg 3 "v ram(160) $end
-$var reg 3 "w ram(161) $end
-$var reg 3 "x ram(162) $end
-$var reg 3 "y ram(163) $end
-$var reg 3 "z ram(164) $end
-$var reg 3 "{ ram(165) $end
-$var reg 3 "| ram(166) $end
-$var reg 3 "} ram(167) $end
-$var reg 3 "~ ram(168) $end
-$var reg 3 #! ram(169) $end
-$var reg 3 #" ram(170) $end
-$var reg 3 ## ram(171) $end
-$var reg 3 #$ ram(172) $end
-$var reg 3 #% ram(173) $end
-$var reg 3 #& ram(174) $end
-$var reg 3 #' ram(175) $end
-$var reg 3 #( ram(176) $end
-$var reg 3 #) ram(177) $end
-$var reg 3 #* ram(178) $end
-$var reg 3 #+ ram(179) $end
-$var reg 3 #, ram(180) $end
-$var reg 3 #- ram(181) $end
-$var reg 3 #. ram(182) $end
-$var reg 3 #/ ram(183) $end
-$var reg 3 #0 ram(184) $end
-$var reg 3 #1 ram(185) $end
-$var reg 3 #2 ram(186) $end
-$var reg 3 #3 ram(187) $end
-$var reg 3 #4 ram(188) $end
-$var reg 3 #5 ram(189) $end
-$var reg 3 #6 ram(190) $end
-$var reg 3 #7 ram(191) $end
-$var reg 3 #8 ram(192) $end
-$var reg 3 #9 ram(193) $end
-$var reg 3 #: ram(194) $end
-$var reg 3 #; ram(195) $end
-$var reg 3 #< ram(196) $end
-$var reg 3 #= ram(197) $end
-$var reg 3 #> ram(198) $end
-$var reg 3 #? ram(199) $end
-$var reg 3 #@ ram(200) $end
-$var reg 3 #A ram(201) $end
-$var reg 3 #B ram(202) $end
-$var reg 3 #C ram(203) $end
-$var reg 3 #D ram(204) $end
-$var reg 3 #E ram(205) $end
-$var reg 3 #F ram(206) $end
-$var reg 3 #G ram(207) $end
-$var reg 3 #H ram(208) $end
-$var reg 3 #I ram(209) $end
-$var reg 3 #J ram(210) $end
-$var reg 3 #K ram(211) $end
-$var reg 3 #L ram(212) $end
-$var reg 3 #M ram(213) $end
-$var reg 3 #N ram(214) $end
-$var reg 3 #O ram(215) $end
-$var reg 3 #P ram(216) $end
-$var reg 3 #Q ram(217) $end
-$var reg 3 #R ram(218) $end
-$var reg 3 #S ram(219) $end
-$var reg 3 #T ram(220) $end
-$var reg 3 #U ram(221) $end
-$var reg 3 #V ram(222) $end
-$var reg 3 #W ram(223) $end
-$var reg 3 #X ram(224) $end
-$var reg 3 #Y ram(225) $end
-$var reg 3 #Z ram(226) $end
-$var reg 3 #[ ram(227) $end
-$var reg 3 #\ ram(228) $end
-$var reg 3 #] ram(229) $end
-$var reg 3 #^ ram(230) $end
-$var reg 3 #_ ram(231) $end
-$var reg 3 #` ram(232) $end
-$var reg 3 #a ram(233) $end
-$var reg 3 #b ram(234) $end
-$var reg 3 #c ram(235) $end
-$var reg 3 #d ram(236) $end
-$var reg 3 #e ram(237) $end
-$var reg 3 #f ram(238) $end
-$var reg 3 #g ram(239) $end
-$var reg 3 #h ram(240) $end
-$var reg 3 #i ram(241) $end
-$var reg 3 #j ram(242) $end
-$var reg 3 #k ram(243) $end
-$var reg 3 #l ram(244) $end
-$var reg 3 #m ram(245) $end
-$var reg 3 #n ram(246) $end
-$var reg 3 #o ram(247) $end
-$var reg 3 #p ram(248) $end
-$var reg 3 #q ram(249) $end
-$var reg 3 #r ram(250) $end
-$var reg 3 #s ram(251) $end
-$var reg 3 #t ram(252) $end
-$var reg 3 #u ram(253) $end
-$var reg 3 #v ram(254) $end
-$var reg 3 #w ram(255) $end
+$var reg 3 5 ram(0) $end
+$var reg 3 6 ram(1) $end
+$var reg 3 7 ram(2) $end
+$var reg 3 8 ram(3) $end
+$var reg 3 9 ram(4) $end
+$var reg 3 : ram(5) $end
+$var reg 3 ; ram(6) $end
+$var reg 3 < ram(7) $end
+$var reg 3 = ram(8) $end
+$var reg 3 > ram(9) $end
+$var reg 3 ? ram(10) $end
+$var reg 3 @ ram(11) $end
+$var reg 3 A ram(12) $end
+$var reg 3 B ram(13) $end
+$var reg 3 C ram(14) $end
+$var reg 3 D ram(15) $end
+$var reg 3 E ram(16) $end
+$var reg 3 F ram(17) $end
+$var reg 3 G ram(18) $end
+$var reg 3 H ram(19) $end
+$var reg 3 I ram(20) $end
+$var reg 3 J ram(21) $end
+$var reg 3 K ram(22) $end
+$var reg 3 L ram(23) $end
+$var reg 3 M ram(24) $end
+$var reg 3 N ram(25) $end
+$var reg 3 O ram(26) $end
+$var reg 3 P ram(27) $end
+$var reg 3 Q ram(28) $end
+$var reg 3 R ram(29) $end
+$var reg 3 S ram(30) $end
+$var reg 3 T ram(31) $end
+$var reg 3 U ram(32) $end
+$var reg 3 V ram(33) $end
+$var reg 3 W ram(34) $end
+$var reg 3 X ram(35) $end
+$var reg 3 Y ram(36) $end
+$var reg 3 Z ram(37) $end
+$var reg 3 [ ram(38) $end
+$var reg 3 \ ram(39) $end
+$var reg 3 ] ram(40) $end
+$var reg 3 ^ ram(41) $end
+$var reg 3 _ ram(42) $end
+$var reg 3 ` ram(43) $end
+$var reg 3 a ram(44) $end
+$var reg 3 b ram(45) $end
+$var reg 3 c ram(46) $end
+$var reg 3 d ram(47) $end
+$var reg 3 e ram(48) $end
+$var reg 3 f ram(49) $end
+$var reg 3 g ram(50) $end
+$var reg 3 h ram(51) $end
+$var reg 3 i ram(52) $end
+$var reg 3 j ram(53) $end
+$var reg 3 k ram(54) $end
+$var reg 3 l ram(55) $end
+$var reg 3 m ram(56) $end
+$var reg 3 n ram(57) $end
+$var reg 3 o ram(58) $end
+$var reg 3 p ram(59) $end
+$var reg 3 q ram(60) $end
+$var reg 3 r ram(61) $end
+$var reg 3 s ram(62) $end
+$var reg 3 t ram(63) $end
+$var reg 3 u ram(64) $end
+$var reg 3 v ram(65) $end
+$var reg 3 w ram(66) $end
+$var reg 3 x ram(67) $end
+$var reg 3 y ram(68) $end
+$var reg 3 z ram(69) $end
+$var reg 3 { ram(70) $end
+$var reg 3 | ram(71) $end
+$var reg 3 } ram(72) $end
+$var reg 3 ~ ram(73) $end
+$var reg 3 "! ram(74) $end
+$var reg 3 "" ram(75) $end
+$var reg 3 "# ram(76) $end
+$var reg 3 "$ ram(77) $end
+$var reg 3 "% ram(78) $end
+$var reg 3 "& ram(79) $end
+$var reg 3 "' ram(80) $end
+$var reg 3 "( ram(81) $end
+$var reg 3 ") ram(82) $end
+$var reg 3 "* ram(83) $end
+$var reg 3 "+ ram(84) $end
+$var reg 3 ", ram(85) $end
+$var reg 3 "- ram(86) $end
+$var reg 3 ". ram(87) $end
+$var reg 3 "/ ram(88) $end
+$var reg 3 "0 ram(89) $end
+$var reg 3 "1 ram(90) $end
+$var reg 3 "2 ram(91) $end
+$var reg 3 "3 ram(92) $end
+$var reg 3 "4 ram(93) $end
+$var reg 3 "5 ram(94) $end
+$var reg 3 "6 ram(95) $end
+$var reg 3 "7 ram(96) $end
+$var reg 3 "8 ram(97) $end
+$var reg 3 "9 ram(98) $end
+$var reg 3 ": ram(99) $end
+$var reg 3 "; ram(100) $end
+$var reg 3 "< ram(101) $end
+$var reg 3 "= ram(102) $end
+$var reg 3 "> ram(103) $end
+$var reg 3 "? ram(104) $end
+$var reg 3 "@ ram(105) $end
+$var reg 3 "A ram(106) $end
+$var reg 3 "B ram(107) $end
+$var reg 3 "C ram(108) $end
+$var reg 3 "D ram(109) $end
+$var reg 3 "E ram(110) $end
+$var reg 3 "F ram(111) $end
+$var reg 3 "G ram(112) $end
+$var reg 3 "H ram(113) $end
+$var reg 3 "I ram(114) $end
+$var reg 3 "J ram(115) $end
+$var reg 3 "K ram(116) $end
+$var reg 3 "L ram(117) $end
+$var reg 3 "M ram(118) $end
+$var reg 3 "N ram(119) $end
+$var reg 3 "O ram(120) $end
+$var reg 3 "P ram(121) $end
+$var reg 3 "Q ram(122) $end
+$var reg 3 "R ram(123) $end
+$var reg 3 "S ram(124) $end
+$var reg 3 "T ram(125) $end
+$var reg 3 "U ram(126) $end
+$var reg 3 "V ram(127) $end
+$var reg 3 "W ram(128) $end
+$var reg 3 "X ram(129) $end
+$var reg 3 "Y ram(130) $end
+$var reg 3 "Z ram(131) $end
+$var reg 3 "[ ram(132) $end
+$var reg 3 "\ ram(133) $end
+$var reg 3 "] ram(134) $end
+$var reg 3 "^ ram(135) $end
+$var reg 3 "_ ram(136) $end
+$var reg 3 "` ram(137) $end
+$var reg 3 "a ram(138) $end
+$var reg 3 "b ram(139) $end
+$var reg 3 "c ram(140) $end
+$var reg 3 "d ram(141) $end
+$var reg 3 "e ram(142) $end
+$var reg 3 "f ram(143) $end
+$var reg 3 "g ram(144) $end
+$var reg 3 "h ram(145) $end
+$var reg 3 "i ram(146) $end
+$var reg 3 "j ram(147) $end
+$var reg 3 "k ram(148) $end
+$var reg 3 "l ram(149) $end
+$var reg 3 "m ram(150) $end
+$var reg 3 "n ram(151) $end
+$var reg 3 "o ram(152) $end
+$var reg 3 "p ram(153) $end
+$var reg 3 "q ram(154) $end
+$var reg 3 "r ram(155) $end
+$var reg 3 "s ram(156) $end
+$var reg 3 "t ram(157) $end
+$var reg 3 "u ram(158) $end
+$var reg 3 "v ram(159) $end
+$var reg 3 "w ram(160) $end
+$var reg 3 "x ram(161) $end
+$var reg 3 "y ram(162) $end
+$var reg 3 "z ram(163) $end
+$var reg 3 "{ ram(164) $end
+$var reg 3 "| ram(165) $end
+$var reg 3 "} ram(166) $end
+$var reg 3 "~ ram(167) $end
+$var reg 3 #! ram(168) $end
+$var reg 3 #" ram(169) $end
+$var reg 3 ## ram(170) $end
+$var reg 3 #$ ram(171) $end
+$var reg 3 #% ram(172) $end
+$var reg 3 #& ram(173) $end
+$var reg 3 #' ram(174) $end
+$var reg 3 #( ram(175) $end
+$var reg 3 #) ram(176) $end
+$var reg 3 #* ram(177) $end
+$var reg 3 #+ ram(178) $end
+$var reg 3 #, ram(179) $end
+$var reg 3 #- ram(180) $end
+$var reg 3 #. ram(181) $end
+$var reg 3 #/ ram(182) $end
+$var reg 3 #0 ram(183) $end
+$var reg 3 #1 ram(184) $end
+$var reg 3 #2 ram(185) $end
+$var reg 3 #3 ram(186) $end
+$var reg 3 #4 ram(187) $end
+$var reg 3 #5 ram(188) $end
+$var reg 3 #6 ram(189) $end
+$var reg 3 #7 ram(190) $end
+$var reg 3 #8 ram(191) $end
+$var reg 3 #9 ram(192) $end
+$var reg 3 #: ram(193) $end
+$var reg 3 #; ram(194) $end
+$var reg 3 #< ram(195) $end
+$var reg 3 #= ram(196) $end
+$var reg 3 #> ram(197) $end
+$var reg 3 #? ram(198) $end
+$var reg 3 #@ ram(199) $end
+$var reg 3 #A ram(200) $end
+$var reg 3 #B ram(201) $end
+$var reg 3 #C ram(202) $end
+$var reg 3 #D ram(203) $end
+$var reg 3 #E ram(204) $end
+$var reg 3 #F ram(205) $end
+$var reg 3 #G ram(206) $end
+$var reg 3 #H ram(207) $end
+$var reg 3 #I ram(208) $end
+$var reg 3 #J ram(209) $end
+$var reg 3 #K ram(210) $end
+$var reg 3 #L ram(211) $end
+$var reg 3 #M ram(212) $end
+$var reg 3 #N ram(213) $end
+$var reg 3 #O ram(214) $end
+$var reg 3 #P ram(215) $end
+$var reg 3 #Q ram(216) $end
+$var reg 3 #R ram(217) $end
+$var reg 3 #S ram(218) $end
+$var reg 3 #T ram(219) $end
+$var reg 3 #U ram(220) $end
+$var reg 3 #V ram(221) $end
+$var reg 3 #W ram(222) $end
+$var reg 3 #X ram(223) $end
+$var reg 3 #Y ram(224) $end
+$var reg 3 #Z ram(225) $end
+$var reg 3 #[ ram(226) $end
+$var reg 3 #\ ram(227) $end
+$var reg 3 #] ram(228) $end
+$var reg 3 #^ ram(229) $end
+$var reg 3 #_ ram(230) $end
+$var reg 3 #` ram(231) $end
+$var reg 3 #a ram(232) $end
+$var reg 3 #b ram(233) $end
+$var reg 3 #c ram(234) $end
+$var reg 3 #d ram(235) $end
+$var reg 3 #e ram(236) $end
+$var reg 3 #f ram(237) $end
+$var reg 3 #g ram(238) $end
+$var reg 3 #h ram(239) $end
+$var reg 3 #i ram(240) $end
+$var reg 3 #j ram(241) $end
+$var reg 3 #k ram(242) $end
+$var reg 3 #l ram(243) $end
+$var reg 3 #m ram(244) $end
+$var reg 3 #n ram(245) $end
+$var reg 3 #o ram(246) $end
+$var reg 3 #p ram(247) $end
+$var reg 3 #q ram(248) $end
+$var reg 3 #r ram(249) $end
+$var reg 3 #s ram(250) $end
+$var reg 3 #t ram(251) $end
+$var reg 3 #u ram(252) $end
+$var reg 3 #v ram(253) $end
+$var reg 3 #w ram(254) $end
+$var reg 3 #x ram(255) $end
 $upscope $end
 $upscope $end
 
@@ -294,22 +295,22 @@ $dumpvars
 sNORMAL "
 sREAD #
 b0000000000000000 $
-b000 %
-b0000000000000000 &
+b0000000000000000 %
+b000 &
 b000000000000000000000000 '
-b000000000000000000000000 (
+b000 (
 b000000000000000000000000 )
-b0000000000000000 *
+b000000000000000000000000 *
 b0000000000000000 +
-0,
+b0000000000000000 ,
 0-
 0.
 0/
 00
-b0000000000000000 1
+01
 b0000000000000000 2
-03
-b000 4
+b0000000000000000 3
+04
 b000 5
 b000 6
 b000 7
@@ -565,6 +566,7 @@ b000 #t
 b000 #u
 b000 #v
 b000 #w
+b000 #x
 $end
 #1
 1!
@@ -846,12 +848,12 @@ $end
 1!
 #140
 0!
-b000000000000000001111000 (
-b0000000000010111 +
+b000000000000000001111000 )
+b0000000000010111 ,
 #141
 1!
-b000000000000000001111000 )
-b0000000000010111 *
+b000000000000000001111000 *
+b0000000000010111 +
 #142
 0!
 #143
@@ -860,8 +862,8 @@ b0000000000010111 *
 0!
 #145
 1!
+10
 1/
-1.
 #146
 0!
 #147
@@ -8882,39 +8884,40 @@ b0000000000010111 *
 0!
 #4155
 1!
-10
+11
 #4156
 0!
 #4157
 1!
-13
-0/
+14
+00
 #4158
 0!
 #4159
 1!
-0.
+0/
 #4160
 0!
-1-
+1.
 #4161
 1!
 sRECODING_UP "
 b000000000000000001111000 '
-03
-00
+b001 (
+04
+01
 #4162
 0!
-0-
+0.
 #4163
 1!
-1,
+1-
 sWAIT_READ #
 #4164
 0!
 #4165
 1!
-0,
+0-
 #4166
 0!
 #4167
@@ -8931,15 +8934,15 @@ sWAIT_READ #
 0!
 #4173
 1!
-10
-b0000000000010111 2
+11
+b0000000000010111 3
 #4174
 0!
 #4175
 1!
 sWRITE #
-b0000000000010111 &
-00
+b0000000000010111 %
+01
 #4176
 0!
 #4177
@@ -8949,36 +8952,37 @@ sWAIT_WRITE #
 0!
 #4179
 1!
-1.
+1/
 #4180
 0!
 #4181
 1!
-10
+11
 #4182
 0!
 #4183
 1!
-0.
-13
+0/
+14
 sNORMAL "
+b010 "O
 #4184
-b000000000000000000000101 (
-1-
+b000000000000000000000101 )
+1.
 0!
 #4185
 1!
-b000000000000000000000101 )
-1,
-b0000000000010111 1
-00
+b000000000000000000000101 *
+1-
+b0000000000010111 2
+01
 #4186
 0!
-0-
+0.
 #4187
 1!
-0,
-03
+0-
+04
 #4188
 0!
 #4189
@@ -8995,22 +8999,22 @@ b0000000000010111 1
 0!
 #4195
 1!
-10
-b0000000000000000 2
+11
+b0000000000000000 3
 #4196
 0!
 #4197
 1!
-b0000000000000000 1
-13
-00
+b0000000000000000 2
+14
+01
 #4198
-b0000000000000011 +
+b0000000000000011 ,
 0!
 #4199
 1!
-b0000000000000011 *
-03
+b0000000000000011 +
+04
 #4200
 0!
 #4201
@@ -9019,78 +9023,83 @@ b0000000000000011 *
 0!
 #4203
 1!
+10
 1/
-1.
 #4204
 0!
 #4205
 1!
-10
+11
 #4206
 0!
 #4207
 1!
-13
-0/
+14
+00
 #4208
 0!
 #4209
 1!
-0.
+0/
 #4210
 0!
-1-
+b000000000000000001111000 )
+b0000000000010111 ,
 #4211
 1!
-1,
-00
+b000000000000000001111000 *
+b0000000000010111 +
+01
 #4212
 0!
-0-
 #4213
 1!
-0,
-03
+04
 #4214
 0!
 #4215
 1!
+10
+1/
 #4216
 0!
 #4217
 1!
+11
 #4218
 0!
 #4219
 1!
+14
+00
 #4220
 0!
 #4221
 1!
-10
-b0000000000000011 2
+0/
 #4222
 0!
+1.
 #4223
 1!
-b0000000000000011 1
-13
-00
+sRECODING_UP "
+sREAD #
+b001 &
+b010 (
+04
+01
 #4224
-b000000000000000000000001 (
-1-
 0!
+0.
 #4225
 1!
-b000000000000000000000001 )
-1,
-03
+1-
+sWAIT_READ #
 #4226
 0!
-0-
 #4227
 1!
-0,
+0-
 #4228
 0!
 #4229
@@ -9107,40 +9116,54 @@ b000000000000000000000001 )
 0!
 #4235
 1!
-10
-b0000000000000000 2
+11
+b0000000000010111 3
 #4236
 0!
 #4237
 1!
-b0000000000000000 1
-13
-00
+sWRITE #
+01
 #4238
 0!
 #4239
 1!
-03
+sWAIT_WRITE #
 #4240
 0!
 #4241
 1!
+1/
 #4242
 0!
 #4243
 1!
+11
 #4244
 0!
 #4245
 1!
+0/
+14
+sNORMAL "
+b100 "O
 #4246
+b000000000000000000000101 )
+1.
 0!
 #4247
 1!
+b000000000000000000000101 *
+1-
+b0000000000010111 2
+01
 #4248
 0!
+0.
 #4249
 1!
+0-
+04
 #4250
 0!
 #4251
@@ -9157,18 +9180,28 @@ b0000000000000000 1
 0!
 #4257
 1!
+11
 #4258
 0!
 #4259
 1!
+14
+01
 #4260
+b000000000000000000000001 )
+1.
 0!
 #4261
 1!
+b000000000000000000000001 *
+1-
+04
 #4262
 0!
+0.
 #4263
 1!
+0-
 #4264
 0!
 #4265
@@ -9185,18 +9218,30 @@ b0000000000000000 1
 0!
 #4271
 1!
+11
+b0000000000000000 3
 #4272
 0!
 #4273
 1!
+b0000000000000000 2
+14
+01
 #4274
+b000000000000000001111000 )
+1.
 0!
 #4275
 1!
+b000000000000000001111000 *
+1-
+04
 #4276
 0!
+0.
 #4277
 1!
+0-
 #4278
 0!
 #4279
@@ -9213,14 +9258,20 @@ b0000000000000000 1
 0!
 #4285
 1!
+11
+b0000000000010111 3
 #4286
 0!
 #4287
 1!
+b0000000000010111 2
+14
+01
 #4288
 0!
 #4289
 1!
+04
 #4290
 0!
 #4291

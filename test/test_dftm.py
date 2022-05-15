@@ -29,9 +29,12 @@ def test_readwrite(host_intf):
         yield write(120, 23)      
         yield read(120)     
         yield read(5)     
-        yield write(5, 3)    
+        yield write(5, 3)   
+        yield write(120, 23)      
+        yield read(120)      
         yield read(5)
         yield read(1)
+        yield read(120)   
             
     return test
 
