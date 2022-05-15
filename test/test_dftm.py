@@ -35,20 +35,25 @@ def test_readwrite(host_intf):
             
     return test
 
-clk_i = Signal(bool(0))
-#rst_i = ResetSignal(0, active=1, isasync=True)
+def test_bench():
+    clk_i = Signal(bool(0))
+    #rst_i = ResetSignal(0, active=1, isasync=True)
 
-clkDriver_Inst = clk_driver(clk_i)
-sd_intf_Inst = SdramIntf()
-host_intf_Inst = HostIntf()
-host_intf_sdram_Inst = HostIntf()
+    clkDriver_Inst = clk_driver(clk_i)
+    sd_intf_Inst = SdramIntf()
+    host_intf_Inst = HostIntf()
+    host_intf_sdram_Inst = HostIntf()
 
-sdram_Inst = sdram(clk_i, sd_intf_Inst, show_command=False)
-sdramCntl_Inst = sdram_cntl(clk_i, host_intf_sdram_Inst, sd_intf_Inst)
-dftm_Inst = dftm(clk_i, host_intf_Inst, host_intf_sdram_Inst)
-# sdramCntl_Inst = traceSignals(MySdramCntl,host_intf_Inst,sd_intf_Inst)
+    sdram_Inst = sdram(clk_i, sd_intf_Inst, show_command=False)
+    sdramCntl_Inst = sdram_cntl(clk_i, host_intf_sdram_Inst, sd_intf_Inst)
+    dftm_Inst = dftm(clk_i, host_intf_Inst, host_intf_sdram_Inst)
+    test_readWrite_Inst = test_readwrite(host_intf_Inst)
 
-test_readWrite_Inst = test_readwrite(host_intf_Inst)
+    dftm_Inst = traceSignals(dftm_Inst,sdramCntl_Inst, host_intf_Inst,sd_intf_Inst)
 
-sim = Simulation(clkDriver_Inst, sdram_Inst, sdramCntl_Inst, dftm_Inst, test_readWrite_Inst)
-sim.run(5000)
+    
+
+    sim = Simulation(clkDriver_Inst, sdram_Inst, sdramCntl_Inst, dftm_Inst, test_readWrite_Inst)
+    sim.run(5000)
+
+test_bench()
