@@ -2,6 +2,7 @@
 
 This repository is created to host the work I done for my PhD. 
 It contains a Dynamic Fault Tolerance Module, Sdram controller and a small memory ram example.
+
 ![alt tag](docs/dftm.jpg)
 
 All the designs are written in MyHDL which is a HDL written in Python. Details and manual to use MyHDL can be found on http://myhdl.org/ 
@@ -89,10 +90,6 @@ make gen_vhdl_sdram_cntl
 pck_myhdl_10.vhd is a VHDL library file which is required by MySdramCntl.vhd (The name of the file may change depends on the MyHDL version being used.)
 
 The converted VHDL design has been verified on Xula2 board. Detailed step followed for the hardware verification can be found at http://design4hardware.blogspot.com/2015/08/detailed-steps-for-hardware.html
-
-### How to Use ###
-
-The converted output (MySdramCntl.v or MySdramCntl.vhd and pck_myhdl_10.vhd) can be used in any RTL design just as a regular verilog/VHDL file. Simply add the converted files to an existing project and instantiate a MySdramCntl module.
 
 ### Limitations ###
 
