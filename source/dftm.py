@@ -20,7 +20,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     """INTERNAL RAM END"""
     
     """RECODE """
-    RECODING_MODE = enum('READ', 'WAIT_READ', 'WAIT_READ_1', 'WRITE', 'WAIT_WRITE', 'WAIT_WRITE_1', 'WAIT_WRITE_2')
+    RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE', 'WAIT_WRITE_1', 'WAIT_WRITE_2')
     recode_position = Signal(intbv(0)[24:]) 
     recode_count = Signal(intbv(0)[16:]) 
     recode_data_o = Signal(intbv(0)[16:])
@@ -84,12 +84,12 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                 host_intf_sdram.rd_i.next = 1
                 current_recoding_mode.next = RECODING_MODE.WAIT_READ
 
-            if current_recoding_mode == RECODING_MODE.WAIT_READ:
-                """Need wait 1 cycle to wait the READ really happen"""
-                current_recoding_mode.next = RECODING_MODE.WAIT_READ_1
-                host_intf_sdram.rd_i.next = 0
+            #if current_recoding_mode == RECODING_MODE.WAIT_READ:
+            #    """Need wait 1 cycle to wait the READ really happen"""
+            #    current_recoding_mode.next = RECODING_MODE.WAIT_READ_1
 
-            if current_recoding_mode == RECODING_MODE.WAIT_READ_1:
+            if current_recoding_mode == RECODING_MODE.WAIT_READ:
+                host_intf_sdram.rd_i.next = 0
                 print(current_recoding_mode)
                 if host_intf_sdram.done_o:
                     current_recoding_mode.next = RECODING_MODE.WRITE
