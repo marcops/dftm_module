@@ -32,7 +32,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     @always(clk_i.posedge)
     def main():        
         if current_operation_mode == OPERATION_MODE.NORMAL:
-            
+            """TODO ignoring if the division was more than number of position in this ram_info"""
             iram_current_position = dftm_ram.get_position(host_intf.addr_i, IRAM_PAGE_SIZE)
             ram_inf = ram[iram_current_position]
             current_encode = dftm_ram.get_encode(ram_inf)
