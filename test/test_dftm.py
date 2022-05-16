@@ -57,6 +57,6 @@ def test_bench():
     
 
     sim = Simulation(clkDriver_Inst, sdram_Inst, sdramCntl_Inst, dftm_Inst, test_readWrite_Inst)
-    sim.run(5000)
+    sim.run(19000)
 
 test_bench()

@@ -13,14 +13,14 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     current_operation_mode = Signal(OPERATION_MODE.NORMAL)
     
     """INTERNAL RAM START"""
-    IRAM_PAGE_SIZE = 1
+    IRAM_PAGE_SIZE = 256
     IRAM_DATA_SIZE = 3
     IRAM_ADDR_AMOUNT = 256
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
     
     """RECODE """
-    RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE')
+    RECODING_MODE = enum('READ', 'WAIT_READ', 'WAIT_READ_1', 'WRITE', 'WAIT_WRITE', 'WAIT_WRITE_1', 'WAIT_WRITE_2')
     recode_position = Signal(intbv(0)[24:]) 
     recode_count = Signal(intbv(0)[16:]) 
     recode_data_o = Signal(intbv(0)[16:])
@@ -79,14 +79,18 @@ def dftm(clk_i, host_intf, host_intf_sdram):
             print("RECODING " , recode_position, " - ", recode_count, " - ", recoding_current_address)
             
             if current_recoding_mode == RECODING_MODE.READ:
-                print(current_recoding_mode)
+                print(current_recoding_mode, recoding_current_address)
                 host_intf_sdram.addr_i.next = recoding_current_address
                 host_intf_sdram.rd_i.next = 1
                 current_recoding_mode.next = RECODING_MODE.WAIT_READ
 
             if current_recoding_mode == RECODING_MODE.WAIT_READ:
-                print(current_recoding_mode)
+                """Need wait 1 cycle to wait the READ really happen"""
+                current_recoding_mode.next = RECODING_MODE.WAIT_READ_1
                 host_intf_sdram.rd_i.next = 0
+
+            if current_recoding_mode == RECODING_MODE.WAIT_READ_1:
+                print(current_recoding_mode)
                 if host_intf_sdram.done_o:
                     current_recoding_mode.next = RECODING_MODE.WRITE
                     recode_data_o.next = ecc.decoder(host_intf_sdram.data_o, recode_from_ecc)
@@ -109,7 +113,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                     host_intf_sdram.wr_i.next = 0
                     r_count =  recode_count +1
                     if r_count < IRAM_PAGE_SIZE:
-                        current_recoding_mode.next = RECODING_MODE.READ
+                        current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_1
                         recode_count.next = r_count
                     else:
                         """RECODING DONE"""
@@ -119,6 +123,12 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                         ram_inf = ram[recode_position]
                         dftm_ram.set_encode(ram_inf, recode_to_ecc)
                         print("Change encode pos:", recode_position, ", from:" , recode_from_ecc, ",to:", recode_to_ecc )
+
+            """Need wait 2 cycle to wait the WRITE really happen"""
+            if current_recoding_mode == RECODING_MODE.WAIT_WRITE_1:                
+                current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_2
+            if current_recoding_mode == RECODING_MODE.WAIT_WRITE_2:
+                current_recoding_mode.next = RECODING_MODE.READ
 
                     
 
