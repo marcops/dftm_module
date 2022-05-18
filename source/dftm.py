@@ -8,14 +8,13 @@ from ecc import *
 from enum import Enum
 
 @block
-def dftm(clk_i, host_intf, host_intf_sdram):
+def dftm(clk_i, host_intf, host_intf_sdram, dftm_iram_page_size = 1):
     OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
     current_operation_mode = Signal(OPERATION_MODE.NORMAL)
     
     """INTERNAL RAM START"""
-    IRAM_PAGE_SIZE = 256
     IRAM_DATA_SIZE = 3
-    IRAM_ADDR_AMOUNT = 256
+    IRAM_ADDR_AMOUNT = 128 # * 1000 #96kb
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
     
@@ -32,20 +31,21 @@ def dftm(clk_i, host_intf, host_intf_sdram):
     @always(clk_i.posedge)
     def main():        
         if current_operation_mode == OPERATION_MODE.NORMAL:
-            """TODO ignoring if the division was more than number of position in this ram_info"""
-            iram_current_position = dftm_ram.get_position(host_intf.addr_i, IRAM_PAGE_SIZE)
-            ram_inf = ram[iram_current_position]
-            current_encode = dftm_ram.get_encode(ram_inf)
+            iram_current_position = dftm_ram.get_position(host_intf.addr_i, dftm_iram_page_size)
+            current_encode = 0
+            """Accessing a area major than managed, we will read without encode"""
+            if iram_current_position > 1:
+                ram_inf = ram[iram_current_position-1]
+                current_encode = dftm_ram.get_encode(ram_inf)
             #print("CUR-ENCODE", host_intf.addr_i, "-",current_encode)
-            host_intf_sdram.addr_i.next = host_intf.addr_i
-            host_intf_sdram.data_i.next = ecc.encoder(host_intf.data_i, current_encode)
+            host_intf_sdram.addr_i.next = host_intf.addr_i            
             host_intf_sdram.rd_i.next = host_intf.rd_i
             host_intf_sdram.wr_i.next = host_intf.wr_i
 
             if host_intf_sdram.done_o:
                 host_intf.data_o.next = host_intf_sdram.data_o                
                 decode_ok = ecc.decoder_check(host_intf.data_i, current_encode)
-                """FAKE ERR WHEN 120 """
+                """TODO Test Propose only - BITFLIP WHEN 120 """
                 decode_ok = not (host_intf.rd_i and host_intf.addr_i == 120)
                 print("[DFTM] addr:", host_intf.data_i, ", ecc:", current_encode )
                 if decode_ok == False:
@@ -75,7 +75,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
             if recode_count == 0 and current_recoding_mode == RECODING_MODE.READ:
                 print("STATING RECODING pos:" , recode_position, ", FROM ECC ", recode_from_ecc, ", to:", recode_to_ecc)    
 
-            recoding_current_address =  (recode_position * IRAM_PAGE_SIZE) + recode_count
+            recoding_current_address =  (recode_position * dftm_iram_page_size) + recode_count
             print("RECODING " , recode_position, " - ", recode_count, " - ", recoding_current_address)
             
             if current_recoding_mode == RECODING_MODE.READ:
@@ -94,7 +94,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                 if host_intf_sdram.done_o:
                     current_recoding_mode.next = RECODING_MODE.WRITE
                     recode_data_o.next = ecc.decoder(host_intf_sdram.data_o, recode_from_ecc)
-                    """TODO IGNORING THE DECODE ERROR """
+                    """TODO IGNORING THE DECODE ERROR - Having not todo here ... """
                     print("RECODING READ ", host_intf_sdram.data_o)
 
             if current_recoding_mode == RECODING_MODE.WRITE:
@@ -112,7 +112,7 @@ def dftm(clk_i, host_intf, host_intf_sdram):
                     host_intf_sdram.rd_i.next = 0
                     host_intf_sdram.wr_i.next = 0
                     r_count =  recode_count +1
-                    if r_count < IRAM_PAGE_SIZE:
+                    if r_count < dftm_iram_page_size:
                         current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_1
                         recode_count.next = r_count
                     else:
