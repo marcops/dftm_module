@@ -48,7 +48,7 @@ def dftm(clk_i, host_intf, host_intf_sdram, dftm_iram_page_size = 1):
                 """TODO Test Propose only - BITFLIP WHEN 120 """
                 decode_ok = not (host_intf.rd_i and host_intf.addr_i == 120)
                 print("[DFTM] addr:", host_intf.data_i, ", ecc:", current_encode )
-                if decode_ok == False:
+                if decode_ok == 0:
                     next_encode = dftm_ram.get_next_encode(current_encode)
                     recode = next_encode != current_encode
                     print("will recode:", recode)
