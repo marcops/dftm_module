@@ -12,3 +12,6 @@ gen_vhdl_dftm:
 
 clean:
 	rm *.vhd
+
+make yosys:
+	yosys dftm.ys

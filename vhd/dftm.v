@@ -66,7 +66,6 @@ function integer MYHDL23_get_position;
     integer page_size;
 begin: MYHDL33_RETURN
     MYHDL23_get_position = (addr / page_size);
-    disable MYHDL33_RETURN;
 end
 endfunction
 
@@ -74,7 +73,7 @@ function integer MYHDL24_get_encode;
     input [3-1:0] mem;
 begin: MYHDL34_RETURN
     MYHDL24_get_encode = (mem >>> 1);
-    disable MYHDL34_RETURN;
+
 end
 endfunction
 
@@ -84,7 +83,7 @@ function MYHDL25_decoder_check;
     integer type;
 begin: MYHDL35_RETURN
     MYHDL25_decoder_check = 1'b1;
-    disable MYHDL35_RETURN;
+    
 end
 endfunction
 
@@ -99,15 +98,15 @@ begin: MYHDL36_RETURN
         $write(" ");
         $write("%0d", enc);
         $write("\n");
-        MYHDL26_get_next_encode = enc;
-        disable MYHDL36_RETURN;
+        MYHDL26_get_next_encode = enc;    
     end
-    $write("enc+1:");
-    $write(" ");
-    $write("%0d", enc);
-    $write("\n");
-    MYHDL26_get_next_encode = (enc + 1);
-    disable MYHDL36_RETURN;
+    else begin
+        $write("enc+1:");
+        $write(" ");
+        $write("%0d", enc);
+        $write("\n");
+        MYHDL26_get_next_encode = (enc + 1);
+    end
 end
 endfunction
 
@@ -117,7 +116,6 @@ function [1-1:0] MYHDL27_decoder;
     integer type;
 begin: MYHDL37_RETURN
     MYHDL27_decoder = data;
-    disable MYHDL37_RETURN;
 end
 endfunction
 
@@ -127,7 +125,6 @@ function [1-1:0] MYHDL28_decoder;
     integer type;
 begin: MYHDL38_RETURN
     MYHDL28_decoder = data;
-    disable MYHDL38_RETURN;
 end
 endfunction
 
@@ -137,7 +134,6 @@ function [1-1:0] MYHDL29_decoder;
     integer type;
 begin: MYHDL39_RETURN
     MYHDL29_decoder = data;
-    disable MYHDL39_RETURN;
 end
 endfunction
 
@@ -146,7 +142,6 @@ function [16-1:0] MYHDL30_decoder;
     input [3-1:0] type;
 begin: MYHDL40_RETURN
     MYHDL30_decoder = data;
-    disable MYHDL40_RETURN;
 end
 endfunction
 
@@ -155,7 +150,7 @@ function [16-1:0] MYHDL31_encoder;
     input [3-1:0] type;
 begin: MYHDL41_RETURN
     MYHDL31_encoder = data;
-    disable MYHDL41_RETURN;
+    
 end
 endfunction
 

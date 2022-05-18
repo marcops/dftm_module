@@ -10,8 +10,9 @@ class dftm_ram():
         if enc >= 3:
             print("more:",enc)
             return enc
-        print("enc+1:",enc)
-        return enc + 1
+        else:
+            print("enc+1:",enc)
+            return enc + 1
 
     def get_encode(mem):
         return mem>>1

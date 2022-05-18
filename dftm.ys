@@ -1,7 +1,8 @@
 # read design
-read_verilog -noassert  -noassume -norestrict vhd/dftm.v 
+read_verilog vhd/dftm.v 
 hierarchy -check
 
 # high-level synthesis
 proc; opt; fsm; opt; memory; opt
 show
+write_verilog synth.v
