@@ -8,10 +8,13 @@ from sdram import *
 from sdram_cntl import *
 from dftm import *
 
+ERR_MEM_DEFAULT = "READ/WRITE with problem"
+ERR_DFTM_MEM_DEFAULT = "DFTM MEM with problem"
+
 def t_asset_hex(msg, data, data_expect):
     data = hex(data)
     data_expect = hex(data_expect)
-    print("DEBUG DATA: " + data + ",ex: " + data_expect)
+    print("DEBUG DATA: " + data + ", ex: " + data_expect)
     if data != data_expect:
         print("[TEST FAIL] "+ msg + " rec:" + str(data) + ", expect:" + str(data_expect))
         raise Exception("TEST FAIL")
