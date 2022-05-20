@@ -67,8 +67,8 @@ def dftm(clk_i, host_intf, host_intf_sdram, dftm_iram_page_size = 256):
                 host_intf_sdram.data_i.next = host_intf.data_i
 
                 if host_intf_sdram.done_o:
-                    host_intf.data_o.next = host_intf_sdram.data_o
-                    decode_ok = ecc.decoder_check(host_intf.data_i, current_encode)
+                    host_intf.data_o.next = ecc.decoder(host_intf_sdram.done_o, current_encode)
+                    decode_ok = ecc.decoder_check(host_intf_sdram.done_o, current_encode)
                     """TODO Test Propose only - BITFLIP WHEN 120 and WRITE"""
                     decode_ok = host_intf.rd_i and host_intf.addr_i == 120
                     print("RD-", host_intf.rd_i)
