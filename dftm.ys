@@ -1,8 +1,8 @@
 # read design
-read_verilog vhd/dftm.v 
+read_verilog hwd/dftm.v 
 hierarchy -check
 
 # high-level synthesis
 proc; opt; fsm; opt; memory; opt
 show
-write_verilog synth.v
+write_verilog hwd/synth.v

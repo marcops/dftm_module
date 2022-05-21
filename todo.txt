@@ -1,0 +1,2 @@
+- Create a new host_inf for the dftm and separate from sdram_ctrl
+- Re-factory this name host_inf, sd_intf

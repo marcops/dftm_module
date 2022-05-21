@@ -13,8 +13,6 @@ def convert_memory_controller(hdl):
     host_intf_Inst = HostIntf()
     host_intf_sdram_Inst = HostIntf()
    
-
-    
     sdram_Inst = sdram(clk_i, sd_intf_Inst, show_command=False)
     sdramCntl_Inst = sdram_cntl(clk_i, host_intf_sdram_Inst, sd_intf_Inst)
     sdramCntli = dftm(clk_i, host_intf_Inst, host_intf_sdram_Inst)

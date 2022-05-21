@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, 'source')
+
 from myhdl import *
 from clk_driver import clk_driver
 from sd_intf import SdramIntf
