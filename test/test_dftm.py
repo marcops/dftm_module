@@ -14,7 +14,7 @@ def tst_0BF_CS_NONE(host_intf):
     def test():
         yield write_ram(host_intf, 20, 23)
         yield read_ram(host_intf, 20)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_0BF_CS_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
     return test
 
 def tst_0BF_CS_NONE_ManyRead(host_intf):
@@ -25,7 +25,7 @@ def tst_0BF_CS_NONE_ManyRead(host_intf):
         yield read_ram(host_intf, 20)
         yield read_ram(host_intf, 20)
         yield read_ram(host_intf, 20)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_0BF_CS_NONE_ManyRead " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
     return test
 
 def tst_0BF_CD_NONE(host_intf):
@@ -39,11 +39,11 @@ def tst_0BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 20, 23)
         yield read_ram(host_intf, 20)        
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)        
+        t_asset_hex("tst_0BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         #check
         yield read_dftm_ram(host_intf, 0)
-        t_asset_hex(ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 1)
+        t_asset_hex("tst_0BF_CD_NONE " + ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 1)
     return test
 
 def tst_1BF_CD_NONE(host_intf):
@@ -57,11 +57,11 @@ def tst_1BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)        
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)        
+        t_asset_hex("tst_1BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         #check
         yield read_dftm_ram(host_intf, 0)
-        t_asset_hex(ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 3)
+        t_asset_hex("tst_1BF_CD_NONE " + ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 3)
     return test
 
 
@@ -76,14 +76,14 @@ def tst_2BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 24)
+        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         #check
         yield read_dftm_ram(host_intf, 0)
-        t_asset_hex(ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 5)
+        t_asset_hex("tst_2BF_CD_NONE " + ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 5)
     return test
 
 
@@ -98,17 +98,17 @@ def tst_3BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 24)
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 25)
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
 
         #check
         yield read_dftm_ram(host_intf, 0)
-        t_asset_hex(ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 7)
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 7)
     return test
 
 def tst_4BF_CD_NONE(host_intf):
@@ -122,20 +122,20 @@ def tst_4BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 24)
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 25)
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 26)
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 26)
 
         #check
         yield read_dftm_ram(host_intf, 0)
-        t_asset_hex(ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 7)
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 7)
     return test
 
 def tst_5BF_CD_NONE(host_intf):
@@ -149,23 +149,23 @@ def tst_5BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 24)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 25)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 26)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 26)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex(ERR_MEM_DEFAULT, host_intf.data_o, 26)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 26)
 
         #check
         yield read_dftm_ram(host_intf, 0)
-        t_asset_hex(ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 7)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_DFTM_MEM_DEFAULT, host_intf.data_o, 7)
     return test
 
 
@@ -183,5 +183,5 @@ dispatcher = {
 try:
     f,s,t = dispatcher[fname]
     test_run_bench(signal=s, func=f, timesteps=t)
-except:
-    print("Function not found " + fname)
+except Exception as e:
+    print("Function not found " + fname + " - " + e)
