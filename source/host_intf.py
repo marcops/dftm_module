@@ -9,8 +9,9 @@ class HostIntf(object):
         self.rd_i = Signal(bool(0))
         self.wr_i = Signal(bool(0))
         self.addr_i = Signal(intbv(0)[24:])  # host side address = sdram side row + col + bank
-        self.data_i = Signal(intbv(0)[16:])
-        self.data_o = Signal(intbv(0)[16:])
+        #separar para ter 16
+        self.data_i = Signal(intbv(0)[32:])
+        self.data_o = Signal(intbv(0)[32:])
         self.done_o = Signal(bool(0))
         self.rdPending_o = Signal(bool(0))
         #add iram_dftm

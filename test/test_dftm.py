@@ -14,7 +14,7 @@ def tst_0BF_CS_NONE(host_intf):
     def test():
         yield write_ram(host_intf, 20, 23)
         yield read_ram(host_intf, 20)
-        t_asset_hex("tst_0BF_CS_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_0BF_CS_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
     return test
 
 def tst_0BF_CS_NONE_ManyRead(host_intf):
@@ -25,7 +25,7 @@ def tst_0BF_CS_NONE_ManyRead(host_intf):
         yield read_ram(host_intf, 20)
         yield read_ram(host_intf, 20)
         yield read_ram(host_intf, 20)
-        t_asset_hex("tst_0BF_CS_NONE_ManyRead " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_0BF_CS_NONE_ManyRead " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
     return test
 
 def tst_0BF_CD_NONE(host_intf):
@@ -39,7 +39,7 @@ def tst_0BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 20, 23)
         yield read_ram(host_intf, 20)        
-        t_asset_hex("tst_0BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_0BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
         
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -57,7 +57,7 @@ def tst_1BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)        
-        t_asset_hex("tst_1BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_1BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
         
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -76,7 +76,7 @@ def tst_2BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
         
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
@@ -98,13 +98,13 @@ def tst_3BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
         
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
 
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(25, ecc.HAMMING))
 
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -128,7 +128,7 @@ def tst_4BF_CD_NONE(host_intf):
         t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
 
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(25, ecc.HAMMING))
 
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 26)
@@ -155,7 +155,7 @@ def tst_5BF_CD_NONE(host_intf):
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
 
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(25, ecc.HAMMING))
 
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 26)
@@ -184,4 +184,5 @@ try:
     f,s,t = dispatcher[fname]
     test_run_bench(signal=s, func=f, timesteps=t)
 except Exception as e:
-    print("Function not found " + fname + " - " + e)
+    #print("FAIL - " + fname + " - " + str(e))
+    raise e

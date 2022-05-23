@@ -21,11 +21,12 @@ def dftm(clk_i, host_intf, host_intf_sdram, dftm_iram_page_size = 256):
     
     """RECODE """
     RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE', 'WAIT_WRITE_1', 'WAIT_WRITE_2')
-    recode_original_data = Signal(intbv(0)[16:])
+    #16 ?
+    recode_original_data = Signal(intbv(0)[32:])
     recode_address = Signal(intbv(0)[24:]) 
-    recode_position = Signal(intbv(0)[16:]) 
-    recode_count = Signal(intbv(0)[16:]) 
-    recode_data_o = Signal(intbv(0)[16:])
+    recode_position = Signal(intbv(0)[24:]) 
+    recode_count = Signal(intbv(0)[24:]) 
+    recode_data_o = Signal(intbv(0)[32:])
     recode_from_ecc = Signal(intbv(0)[IRAM_DATA_SIZE:])
     recode_to_ecc = Signal(intbv(0)[IRAM_DATA_SIZE:])
     current_recoding_mode = Signal(RECODING_MODE.READ)

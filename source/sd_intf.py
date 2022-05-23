@@ -5,7 +5,7 @@ from math import log
 class SdramIntf(object):
 
     addr_width = 13
-    data_width = 16
+    data_width = 32
     # constant for sdram
     SDRAM_NROWS_C = 8192            # Number of rows in SDRAM array.
     SDRAM_NCOLS_C = 512             # Number of columns in SDRAM array.
