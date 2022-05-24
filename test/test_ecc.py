@@ -1,7 +1,7 @@
 from utils import *
 import sys
 sys.path.insert(0, 'source')
-sys.path.insert(1, 'source/ecc')
+sys.path.insert(1, 'source/interface')
 
 def test_parity_encode():
     lst = [1,0,0,1,0,1,1,0]

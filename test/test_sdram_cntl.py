@@ -1,5 +1,6 @@
 import sys
 sys.path.insert(0, 'source')
+sys.path.insert(1, 'source/interface')
 
 from clk_driver import clk_driver
 from sdram import *
