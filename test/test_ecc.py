@@ -16,28 +16,25 @@ def test_parity_encode():
         t_asset_hex("test_parity_encode - code/decode" , i, vd)
         t_asset_hex("test_parity_encode - parity" , lst[i], p)
 
+def test_hamming_encode():
+    v = 64211
+    for i in range(0,21):
+
+        r = ecc.encode(v, ecc.HAMMING)
+        
+        rs = (r ^ (1 << i))
+        nr = ecc.decode(rs, ecc.HAMMING)
+
+        # print("r: "+bin(r))
+        # print("r2:"+bin(rs))
+        # print("nr:"+ bin(nr))
+        # print("")
+        # print("or:"+bin(v))
+        # print("co:"+ bin(nr>>5))
+        t_asset_hex("test_hamming_encode - parity" , int(v), int(nr))
+
+        #print(str(i) + ") "+ str(int(v) == int(nr)))
+
+
 test_parity_encode()
-
-
-
-
-# v = 64211
-# for i in range(0,21):
-
-#     r = hamming_encode(v)
-    
-#     rs = (r ^ (1 << i))
-#     nr = hamming_decode(rs)
-
-#     print("r: "+bin(r))
-#     print("r2:"+bin(rs))
-#     print("nr:"+ bin(nr))
-#     print("")
-#     print("or:"+bin(v))
-#     print("co:"+ bin(nr>>5))
-#     100101100100101101011
-#     10010110010010110101110000
-
-#     print(str(i) + ") "+ str(int(v) == int(nr)))
-
-
+test_hamming_encode()
