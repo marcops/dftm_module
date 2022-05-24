@@ -14,7 +14,7 @@ def tst_0BF_CS_NONE(host_intf):
     def test():
         yield write_ram(host_intf, 20, 23)
         yield read_ram(host_intf, 20)
-        t_asset_hex("tst_0BF_CS_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
+        t_asset_hex("tst_0BF_CS_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
     return test
 
 def tst_0BF_CS_NONE_ManyRead(host_intf):
@@ -25,7 +25,7 @@ def tst_0BF_CS_NONE_ManyRead(host_intf):
         yield read_ram(host_intf, 20)
         yield read_ram(host_intf, 20)
         yield read_ram(host_intf, 20)
-        t_asset_hex("tst_0BF_CS_NONE_ManyRead " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
+        t_asset_hex("tst_0BF_CS_NONE_ManyRead " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
     return test
 
 def tst_0BF_CD_NONE(host_intf):
@@ -39,7 +39,7 @@ def tst_0BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 20, 23)
         yield read_ram(host_intf, 20)        
-        t_asset_hex("tst_0BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
+        t_asset_hex("tst_0BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -57,7 +57,7 @@ def tst_1BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)        
-        t_asset_hex("tst_1BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
+        t_asset_hex("tst_1BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -76,10 +76,10 @@ def tst_2BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
+        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
+        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -98,13 +98,13 @@ def tst_3BF_CD_NONE(host_intf):
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(23, ecc.NONE))
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(25, ecc.HAMMING))
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
 
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -125,10 +125,10 @@ def tst_4BF_CD_NONE(host_intf):
         t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(25, ecc.HAMMING))
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
 
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 26)
@@ -152,10 +152,10 @@ def tst_5BF_CD_NONE(host_intf):
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(24, ecc.PARITY))
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 24)
 
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, ecc.encode(25, ecc.HAMMING))
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 25)
 
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 26)

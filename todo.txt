@@ -1,2 +1,3 @@
-- Create a new host_inf for the dftm and separate from sdram_ctrl
 - Re-factory this name host_inf, sd_intf
+- Let generic the data_o/data_i size (controller+dftm+ram) today is 16/32
+- Re-make the ecc with signal not with integer(ECC.code/decode)

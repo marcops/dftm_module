@@ -22,7 +22,7 @@ def dftm(clk_i, ext_intf, host_intf_sdram, dftm_iram_page_size = 256):
     
     """RECODE """
     RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE', 'WAIT_WRITE_1', 'WAIT_WRITE_2')
-    #16 ?
+    
     recode_original_data = Signal(intbv(0)[32:])
     recode_address = Signal(intbv(0)[24:]) 
     recode_position = Signal(intbv(0)[24:]) 
@@ -78,7 +78,7 @@ def dftm(clk_i, ext_intf, host_intf_sdram, dftm_iram_page_size = 256):
                         ext_intf.done_o.next = host_intf_sdram.done_o
                     else:  
                         in_read.next = 0                    
-                        decode_ok = ecc.check(int(host_intf_sdram.done_o), current_encode)
+                        decode_ok = ecc.check(int(host_intf_sdram.data_o), current_encode)
                         
                         #TODO DEBUG BITFLIP AT ADDRESS 120 
                         if ext_intf.addr_i == 120:
@@ -111,7 +111,6 @@ def dftm(clk_i, ext_intf, host_intf_sdram, dftm_iram_page_size = 256):
                 else:
                     ext_intf.done_o.next = host_intf_sdram.done_o
                     #if in_read == 1:
-                    #TODO precisa?
                     #host_intf.data_o.next = ecc.decoder(host_intf_sdram.done_o, current_encode)
                     #in_read.next = 0
  
