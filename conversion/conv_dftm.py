@@ -10,12 +10,12 @@ def convert_memory_controller(hdl):
     #rst_i = ResetSignal(0, active=1, isasync=True)
     #clkDriver_Inst = clk_driver(clk_i)
     sd_intf_Inst = SdramIntf()
-    host_intf_Inst = HostIntf()
+    ext_intf_Inst = ExtIntf()
     host_intf_sdram_Inst = HostIntf()
    
     sdram_Inst = sdram(clk_i, sd_intf_Inst, show_command=False)
     sdramCntl_Inst = sdram_cntl(clk_i, host_intf_sdram_Inst, sd_intf_Inst)
-    sdramCntli = dftm(clk_i, host_intf_Inst, host_intf_sdram_Inst)
+    sdramCntli = dftm(clk_i, ext_intf_Inst, host_intf_sdram_Inst)
     sdramCntli.convert(hdl)
 
 convert_memory_controller(hdl='VHDL')

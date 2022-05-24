@@ -1,5 +1,5 @@
 $date
-    Mon May 23 19:37:58 2022
+    Tue May 24 08:45:44 2022
 $end
 $version
     MyHDL 0.11
@@ -21,13 +21,13 @@ $var reg 3 ) recode_from_ecc $end
 $var reg 32 * recode_original_data $end
 $var reg 24 + recode_position $end
 $var reg 3 , recode_to_ecc $end
-$var reg 1 - host_intf_dftm_i $end
-$var reg 1 . host_intf_done_o $end
-$var reg 1 / host_intf_rd_i $end
-$var reg 32 0 host_intf_data_o $end
-$var reg 24 1 host_intf_addr_i $end
-$var reg 1 2 host_intf_wr_i $end
-$var reg 32 3 host_intf_data_i $end
+$var reg 1 - ext_intf_dftm_i $end
+$var reg 1 . ext_intf_done_o $end
+$var reg 1 / ext_intf_rd_i $end
+$var reg 16 0 ext_intf_data_o $end
+$var reg 24 1 ext_intf_addr_i $end
+$var reg 1 2 ext_intf_wr_i $end
+$var reg 16 3 ext_intf_data_i $end
 $var reg 24 4 host_intf_sdram_addr_i $end
 $var reg 1 5 host_intf_sdram_rd_i $end
 $var reg 1 6 host_intf_sdram_wr_i $end
@@ -312,10 +312,10 @@ b000 ,
 0-
 0.
 0/
-b00000000000000000000000000000000 0
+b0000000000000000 0
 b000000000000000000000000 1
 02
-b00000000000000000000000000000000 3
+b0000000000000000 3
 b000000000000000000000000 4
 05
 06
@@ -861,7 +861,7 @@ $end
 #140
 0!
 1-
-b00000000000000000000000000000001 3
+b0000000000000001 3
 12
 #141
 1!
@@ -940,7 +940,7 @@ b001 ?
 0%
 0-
 b000000000000000001111000 1
-b00000000000000000000000000010111 3
+b0000000000010111 3
 #160
 0!
 #161
@@ -27143,7 +27143,7 @@ sWAIT_WRITE #
 #10941
 1!
 06
-b00000000000000000000000000010111 0
+b0000000000010111 0
 b00000000000000000000000000010111 :
 1.
 sNORMAL "
@@ -27163,7 +27163,7 @@ b000000000000000000000000 1
 1/
 #10945
 1!
-b00000000000000000000000000000011 0
+b0000000000000011 0
 0.
 1%
 #10946

@@ -56,15 +56,15 @@ def test_run_bench(signal = False, func = None, timesteps = 5000):
 
     clkDriver_Inst = clk_driver(clk_i)
     sd_intf_Inst = SdramIntf()
-    host_intf_Inst = HostIntf()
+    ext_intf_Inst = ExtIntf()
     host_intf_sdram_Inst = HostIntf()
 
     sdram_Inst = sdram(clk_i, sd_intf_Inst, show_command=False)
     sdramCntl_Inst = sdram_cntl(clk_i, host_intf_sdram_Inst, sd_intf_Inst)
-    dftm_Inst = dftm(clk_i, host_intf_Inst, host_intf_sdram_Inst)
-    test_readWrite_Inst = func(host_intf_Inst)
+    dftm_Inst = dftm(clk_i, ext_intf_Inst, host_intf_sdram_Inst)
+    test_readWrite_Inst = func(ext_intf_Inst)
     if signal:
-        dftm_Inst = traceSignals(dftm_Inst,sdramCntl_Inst, host_intf_Inst,sd_intf_Inst)
+        dftm_Inst = traceSignals(dftm_Inst,sdramCntl_Inst, ext_intf_Inst, sd_intf_Inst)
 
     sim = Simulation(clkDriver_Inst, sdram_Inst, sdramCntl_Inst, dftm_Inst, test_readWrite_Inst)
     sim.run(timesteps)
