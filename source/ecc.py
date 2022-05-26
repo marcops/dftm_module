@@ -9,14 +9,8 @@ class ecc():
         if type == ECC_NONE:
             return intbv(int(d))[WORD_SIZE_WITH_ECC:]
         if type == ECC_PARITY:
-            x = False
-            x ^= d[8]
-            x ^= d[4]
-            x ^= d[2]
-            x ^= d[1]
-            x = (~x) & 1
             v = intbv((d << DISTANCE_ECC_ONE_MODULE))[WORD_SIZE_WITH_ECC:]
-            v[0] = x
+            v[0] = d[0]^d[1]^d[2]^d[3]^d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]^d[11]^d[12]^d[13]^d[14]^d[15]
             return v
  
         if type == ECC_HAMMING:
@@ -44,14 +38,9 @@ class ecc():
 
         #parity check
         if type == ECC_PARITY:
-            c = data[0]
-            x = False
-            x ^= data[8+ DISTANCE_ECC_ONE_MODULE]
-            x ^= data[4+ DISTANCE_ECC_ONE_MODULE]
-            x ^= data[2+ DISTANCE_ECC_ONE_MODULE]
-            x ^= data[1+ DISTANCE_ECC_ONE_MODULE]
-            x = (~x) & 1
-            return c == x
+            #0+DISTANCE_ECC_ONE_MODULE
+            x = data[5]^data[6]^data[7]^data[8]^data[9]^data[10]^data[11]^data[12]^data[13]^data[14]^data[15]^data[16]^data[17]^data[18]^data[19]^data[20]
+            return data[0] == x
 
         if type == ECC_HAMMING:
             d = data[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
@@ -61,9 +50,7 @@ class ecc():
             p[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
             p[3] = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
             p[4] = d[11]^d[12]^d[13]^d[14]^d[15]
-            check = data & 31
-
-            return check == p
+            return data[DISTANCE_ECC_ONE_MODULE:] == p
         if type == ECC_REED_SOLOMON:
             return True
         return False
@@ -72,18 +59,18 @@ class ecc():
         if type == ECC_NONE:
             return intbv(int(data))[WORD_SIZE:]
         if type == ECC_PARITY:
-            return intbv(int(data >> DISTANCE_ECC_ONE_MODULE))[WORD_SIZE:]
+            return intbv(int(data))[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
         if type == ECC_HAMMING:
-            d = data >> DISTANCE_ECC_ONE_MODULE
-            p0 = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
-            p1 = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
-            p2 = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
-            p3 = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
-            p4 = d[11]^d[12]^d[13]^d[14]^d[15]
-            pg = ((p4<<4)|(p3<<3)|(p2<<2)|(p1<<1)|p0)
-            pr = data & 31
+            d = data[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
+            pg = intbv(bool(0))[DISTANCE_ECC_ONE_MODULE:]
+            pg[0] = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
+            pg[1] = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
+            pg[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
+            pg[3] = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
+            pg[4] = d[11]^d[12]^d[13]^d[14]^d[15]
+            p = pg^data[DISTANCE_ECC_ONE_MODULE:]
 
-            p = pg^pr
+            """Terrible code but its fast"""
             if p == 0:
                 return intbv(int(d))[WORD_SIZE:]
             np =0
@@ -115,10 +102,13 @@ class ecc():
                 np = p+1
             if p>=9 and p <=15:
                 np = p
+            """end terrible code"""
+            #ndata = data
             #data[np] = not data[np]
-
+            #return data
             return intbv(int(((data) ^ (1 << np)) >> DISTANCE_ECC_ONE_MODULE))[WORD_SIZE:]
-            #return intbv(int((data) >> 5))[BIT_SIZE_IN:]
+            #return ndata[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
+
         if type == ECC_REED_SOLOMON:
             return intbv(int(data))[WORD_SIZE:]
         return intbv(int(data))[WORD_SIZE:]

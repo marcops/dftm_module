@@ -3,11 +3,23 @@ import sys
 sys.path.insert(0, 'source')
 sys.path.insert(1, 'source/interface')
 
+def test_none_encode():
+    for i in range(7):
+        ni = intbv(i,None,None, WORD_SIZE)
+        ve = ecc.encode(ni, ECC_NONE)
+        isOK = ecc.check(ve, ECC_NONE)
+        vd = ecc.decode(ve, ECC_NONE)
+        
+        t_asset_hex(str(i) + ")test_none_encode - check" , isOK, True)
+        t_asset_hex(str(i) + ")test_none_encode - code" , ve, ni)
+        t_asset_hex(str(i) + ")test_none_encode - decode" , vd, ni)
+
+
 def test_parity_encode():
-    lst = [1,1,0,0,0,0,1,0]
+    lst = [0,1,1,0,1,0,0]
 
     for i in range(7):
-        ni = intbv(i,None,None, 16)
+        ni = intbv(i,None,None, WORD_SIZE)
         ve = ecc.encode(ni, ECC_PARITY)
         isOK = ecc.check(ve, ECC_PARITY)
         p = ve[0]
@@ -19,8 +31,8 @@ def test_parity_encode():
 
 def test_hamming_encode():
     v = 64211
-    vi = intbv(v,None,None, 16)
-    for i in range(0,21):
+    vi = intbv(v,None,None, WORD_SIZE)
+    for i in range(0,WORD_SIZE_WITH_ECC):
 
         r = ecc.encode(vi, ECC_HAMMING)
         isOK = ecc.check(r, ECC_HAMMING)
@@ -37,3 +49,4 @@ def test_hamming_encode():
 
 test_parity_encode()
 test_hamming_encode()
+test_none_encode()
