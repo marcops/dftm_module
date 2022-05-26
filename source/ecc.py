@@ -54,14 +54,15 @@ class ecc():
             return c == x
 
         if type == ECC_HAMMING:
-            d = data >> DISTANCE_ECC_ONE_MODULE
-            p0 = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
-            p1 = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
-            p2 = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
-            p3 = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
-            p4 = d[11]^d[12]^d[13]^d[14]^d[15]
-            check = data & 31
-            return check == ((p4<<4)|(p3<<3)|(p2<<2)|(p1<<1)|p0)
+            d = data[BIT_SIZE_ONE_MODULE:5]
+            p = intbv(bool(0))[DISTANCE_ECC_ONE_MODULE:]
+            p[0] = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
+            p[1] = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
+            p[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
+            p[3] = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
+            p[5] = d[11]^d[12]^d[13]^d[14]^d[15]
+            check = data[:DISTANCE_ECC_ONE_MODULE]
+            return check == p
         if type == ECC_REED_SOLOMON:
             return True
         return False
