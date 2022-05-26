@@ -11,8 +11,8 @@ class HostIntf(object):
         # host side address = sdram side row + col + bank
         self.addr_i = Signal(intbv(0)[24:])
         #separar para ter 16
-        self.data_i = Signal(intbv(0)[WORD_SIZE:])
-        self.data_o = Signal(intbv(0)[WORD_SIZE:])
+        self.data_i = Signal(intbv(0)[WORD_SIZE_WITH_ECC:])
+        self.data_o = Signal(intbv(0)[WORD_SIZE_WITH_ECC:])
         self.done_o = Signal(bool(0))
         self.rdPending_o = Signal(bool(0))
 
