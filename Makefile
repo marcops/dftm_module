@@ -33,7 +33,7 @@ gen_dftm_hwd:
 
 gen_sdram_cntl: test_sdram_cntl gen_sdram_hwd
 
-gen_dftm: gen_dftm_tb gen_dftm_vhd
+gen_dftm: gen_dftm_tb gen_dftm_hwd
 
 all_dftm: test_dftm gen_dftm_hwd
 

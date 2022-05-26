@@ -5,7 +5,7 @@ from sdram import *
 from sdram_cntl import *
 from ecc import *
 from ext_intf import *
-
+from definitions import *
 from enum import Enum
 
 @block
@@ -78,14 +78,14 @@ def dftm(clk_i, ext_intf, host_intf_sdram, dftm_iram_page_size = 256):
                         ext_intf.done_o.next = host_intf_sdram.done_o
                     else:  
                         in_read.next = 0                    
-                        decode_ok = ecc.check(int(host_intf_sdram.data_o), current_encode)
+                        decode_ok = ecc.check(host_intf_sdram.data_o, current_encode)
                         
                         #TODO DEBUG BITFLIP AT ADDRESS 120 
                         if ext_intf.addr_i == 120:
                             decode_ok = 0
 
                         if decode_ok:
-                            ext_intf.data_o.next = ecc.decode(int(host_intf_sdram.data_o), current_encode)
+                            ext_intf.data_o.next = ecc.decode(host_intf_sdram.data_o, current_encode)
                             ext_intf.done_o.next = host_intf_sdram.done_o
                         else:                        
                             next_encode = dftm_ram.get_next_encode(current_encode)                        
@@ -105,7 +105,7 @@ def dftm(clk_i, ext_intf, host_intf_sdram, dftm_iram_page_size = 256):
                                 host_intf_sdram.rd_i.next = False
                                 #host_intf_sdram.wr_i.next = False
                             else:
-                                ext_intf.data_o.next = ecc.decode(int(host_intf_sdram.data_o), current_encode)
+                                ext_intf.data_o.next = ecc.decode(host_intf_sdram.data_o, current_encode)
                                 ext_intf.done_o.next = host_intf_sdram.done_o
                                 in_read.next = 0
                 else:
@@ -137,10 +137,10 @@ def dftm(clk_i, ext_intf, host_intf_sdram, dftm_iram_page_size = 256):
                 print(current_recoding_mode)
                 if host_intf_sdram.done_o:
                     current_recoding_mode.next = RECODING_MODE.WRITE
-                    decoded_data = ecc.decode(int(host_intf_sdram.data_o), recode_from_ecc)
+                    decoded_data = ecc.decode(host_intf_sdram.data_o, recode_from_ecc)
                     recode_data_o.next = decoded_data
                     #debug propose
-                    recode_data_o.next = ecc.decode(int(host_intf_sdram.data_o), recode_from_ecc) + 1
+                    recode_data_o.next = ecc.decode(host_intf_sdram.data_o, recode_from_ecc) + 1
                     if recode_address == host_intf_sdram.addr_i:
                         recode_original_data.next = decoded_data
                     """TODO IGNORING THE DECODE ERROR - Having not todo here ... """
@@ -150,7 +150,7 @@ def dftm(clk_i, ext_intf, host_intf_sdram, dftm_iram_page_size = 256):
                 print(current_recoding_mode)
                 host_intf_sdram.addr_i.next = recoding_current_address
                 #recode_current_ecc
-                host_intf_sdram.data_i.next = ecc.encode(int(recode_data_o), recode_to_ecc)
+                host_intf_sdram.data_i.next = ecc.encode(recode_data_o, recode_to_ecc)
                 print("RECODING WRITE ", host_intf_sdram.data_o)
                 current_recoding_mode.next = RECODING_MODE.WAIT_WRITE
 

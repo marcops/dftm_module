@@ -4,34 +4,33 @@ sys.path.insert(0, 'source')
 sys.path.insert(1, 'source/interface')
 
 def test_parity_encode():
-    lst = [1,0,0,1,0,1,1,0]
+    lst = [1,1,0,0,0,0,1,0]
 
     for i in range(7):
-        ve = ecc.encode(i, ecc.PARITY)
-        isOK = ecc.check(ve, ecc.PARITY)
-        p = ve & 0x1
-        vd = ecc.decode(ve, ecc.PARITY)
+        ni = intbv(i,None,None, 16)
+        ve = ecc.encode(ni, ECC_PARITY)
+        isOK = ecc.check(ve, ECC_PARITY)
+        p = ve[0]
+        vd = ecc.decode(ve, ECC_PARITY)
         
-        t_asset_hex("test_parity_encode - check" , isOK, True)
-        t_asset_hex("test_parity_encode - code/decode" , i, vd)
-        t_asset_hex("test_parity_encode - parity" , lst[i], p)
+        t_asset_hex(str(i) + ")test_parity_encode - check" , isOK, True)
+        t_asset_hex(str(i) + ")test_parity_encode - code/decode" , ni, vd)
+        t_asset_hex(str(i) + ")test_parity_encode - parity" , lst[i], p)
 
 def test_hamming_encode():
     v = 64211
+    vi = intbv(v,None,None, 16)
     for i in range(0,21):
 
-        r = ecc.encode(v, ecc.HAMMING)
-        
+        r = ecc.encode(vi, ECC_HAMMING)
+        isOK = ecc.check(r, ECC_HAMMING)
         rs = (r ^ (1 << i))
-        nr = ecc.decode(rs, ecc.HAMMING)
+        nOK = ecc.check(rs, ECC_HAMMING)
+        nr = ecc.decode(rs, ECC_HAMMING)
 
-        # print("r: "+bin(r))
-        # print("r2:"+bin(rs))
-        # print("nr:"+ bin(nr))
-        # print("")
-        # print("or:"+bin(v))
-        # print("co:"+ bin(nr>>5))
-        t_asset_hex("test_hamming_encode - parity" , int(v), int(nr))
+        t_asset_hex("test_hamming_encode - nok" , nOK, False)
+        t_asset_hex("test_hamming_encode - ok" , isOK, True)
+        t_asset_hex("test_hamming_encode - same value" , int(vi), int(nr))
 
         #print(str(i) + ") "+ str(int(v) == int(nr)))
 

@@ -182,7 +182,10 @@ dispatcher = {
 }
 try:
     f,s,t = dispatcher[fname]
+    print("-------------------------------")
+    print(fname)
+    print("-------------------------------")
     test_run_bench(signal=s, func=f, timesteps=t)
 except Exception as e:
-    #print("FAIL - " + fname + " - " + str(e))
+    print("FAIL - " + fname + " - " + str(e))   
     raise e
