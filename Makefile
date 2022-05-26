@@ -21,7 +21,7 @@ test_sdram:
 
 gen_dftm_tb:
 	$(TEST_CMD)test_dftm.py tst_1BF_CD_NONE
-	mv *.vcd $(HWD_OUTPUT)/dftm.vcd
+	mv *.vcd $(HWD_OUTPUT)/
 
 gen_sdram_hwd:
 	$(CONV_CMD)conv_sdram_cntl.py
