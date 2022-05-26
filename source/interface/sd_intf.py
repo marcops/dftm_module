@@ -1,11 +1,11 @@
 from myhdl import *
 from math import log
-
+from definitions import *
 
 class SdramIntf(object):
 
     addr_width = 13
-    data_width = 32
+    data_width = WORD_SIZE
     # constant for sdram
     SDRAM_NROWS_C = 8192            # Number of rows in SDRAM array.
     SDRAM_NCOLS_C = 512             # Number of columns in SDRAM array.

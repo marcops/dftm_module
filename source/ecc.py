@@ -5,38 +5,38 @@ from definitions import *
 #x = ENCODE.get(0)
 
 class ecc():
-    def encode(data, type):
+    def encode(d, type):
         if type == ECC_NONE:
-            return intbv(int(data))[BIT_SIZE_ONE_MODULE:]
+            return intbv(int(d))[WORD_SIZE_WITH_ECC:]
         if type == ECC_PARITY:
             x = False
-            x ^= data[8]
-            x ^= data[4]
-            x ^= data[2]
-            x ^= data[1]
+            x ^= d[8]
+            x ^= d[4]
+            x ^= d[2]
+            x ^= d[1]
             x = (~x) & 1
-            v = intbv((data << DISTANCE_ECC_ONE_MODULE))[BIT_SIZE_ONE_MODULE:]
+            v = intbv((d << DISTANCE_ECC_ONE_MODULE))[WORD_SIZE_WITH_ECC:]
             v[0] = x
             return v
  
         if type == ECC_HAMMING:
-            d = data
-            p0 = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
-            p1 = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
-            p2 = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
-            p3 = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
-            p4 = d[11]^d[12]^d[13]^d[14]^d[15]
-            v = intbv((data << DISTANCE_ECC_ONE_MODULE))[BIT_SIZE_ONE_MODULE:]
-            v[0] = p0
-            v[1] = p1
-            v[2] = p2
-            v[3] = p3
-            v[4] = p4
+            p = intbv(bool(0))[DISTANCE_ECC_ONE_MODULE:]
+            p[0] = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
+            p[1] = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
+            p[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
+            p[3] = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
+            p[4] = d[11]^d[12]^d[13]^d[14]^d[15]
+            v = intbv((d << DISTANCE_ECC_ONE_MODULE))[WORD_SIZE_WITH_ECC:]
+            v[0] = p[0]
+            v[1] = p[1]
+            v[2] = p[2]
+            v[3] = p[3]
+            v[4] = p[4]
             return v
 
         if type == ECC_REED_SOLOMON:
-            return intbv(int(data))[BIT_SIZE_ONE_MODULE:]
-        return intbv(int(data))[BIT_SIZE_ONE_MODULE:]
+            return intbv(int(d))[WORD_SIZE_WITH_ECC:]
+        return intbv(int(d))[WORD_SIZE_WITH_ECC:]
 
     def check(data, type):
         if type == ECC_NONE:
@@ -54,14 +54,15 @@ class ecc():
             return c == x
 
         if type == ECC_HAMMING:
-            d = data[BIT_SIZE_ONE_MODULE:5]
+            d = data[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
             p = intbv(bool(0))[DISTANCE_ECC_ONE_MODULE:]
             p[0] = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
             p[1] = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
             p[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
             p[3] = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
-            p[5] = d[11]^d[12]^d[13]^d[14]^d[15]
-            check = data[:DISTANCE_ECC_ONE_MODULE]
+            p[4] = d[11]^d[12]^d[13]^d[14]^d[15]
+            check = data & 31
+
             return check == p
         if type == ECC_REED_SOLOMON:
             return True
@@ -69,9 +70,9 @@ class ecc():
         
     def decode(data, type):
         if type == ECC_NONE:
-            return intbv(int(data))[BIT_SIZE_IN:]
+            return intbv(int(data))[WORD_SIZE:]
         if type == ECC_PARITY:
-            return intbv(int(data >> DISTANCE_ECC_ONE_MODULE))[BIT_SIZE_IN:]
+            return intbv(int(data >> DISTANCE_ECC_ONE_MODULE))[WORD_SIZE:]
         if type == ECC_HAMMING:
             d = data >> DISTANCE_ECC_ONE_MODULE
             p0 = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
@@ -84,7 +85,7 @@ class ecc():
 
             p = pg^pr
             if p == 0:
-                return intbv(int(d))[BIT_SIZE_IN:]
+                return intbv(int(d))[WORD_SIZE:]
             np =0
             if p == 1:
                 np = 0
@@ -116,8 +117,8 @@ class ecc():
                 np = p
             #data[np] = not data[np]
 
-            return intbv(int(((data) ^ (1 << np)) >> DISTANCE_ECC_ONE_MODULE))[BIT_SIZE_IN:]
+            return intbv(int(((data) ^ (1 << np)) >> DISTANCE_ECC_ONE_MODULE))[WORD_SIZE:]
             #return intbv(int((data) >> 5))[BIT_SIZE_IN:]
         if type == ECC_REED_SOLOMON:
-            return intbv(int(data))[BIT_SIZE_IN:]
-        return intbv(int(data))[BIT_SIZE_IN:]
+            return intbv(int(data))[WORD_SIZE:]
+        return intbv(int(data))[WORD_SIZE:]

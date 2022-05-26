@@ -28,9 +28,9 @@ def test_hamming_encode():
         nOK = ecc.check(rs, ECC_HAMMING)
         nr = ecc.decode(rs, ECC_HAMMING)
 
-        t_asset_hex("test_hamming_encode - nok" , nOK, False)
-        t_asset_hex("test_hamming_encode - ok" , isOK, True)
-        t_asset_hex("test_hamming_encode - same value" , int(vi), int(nr))
+        t_asset_hex(str(i) + ")test_hamming_encode - nok" , nOK, False)
+        t_asset_hex(str(i) + ")test_hamming_encode - ok" , isOK, True)
+        t_asset_hex(str(i) + ")test_hamming_encode - same value" , int(vi), int(nr))
 
         #print(str(i) + ") "+ str(int(v) == int(nr)))
 

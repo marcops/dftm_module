@@ -1,5 +1,5 @@
 from myhdl import *
-
+from definitions import *
 
 class ExtIntf(object):
 
@@ -10,8 +10,8 @@ class ExtIntf(object):
         self.wr_i = Signal(bool(0))
         self.addr_i = Signal(intbv(0)[24:])  # host side address = sdram side row + col + bank
         #separar para ter 16
-        self.data_i = Signal(intbv(0)[16:])
-        self.data_o = Signal(intbv(0)[16:])
+        self.data_i = Signal(intbv(0)[WORD_SIZE:])
+        self.data_o = Signal(intbv(0)[WORD_SIZE:])
         self.done_o = Signal(bool(0))
         self.rdPending_o = Signal(bool(0))
         #add iram_dftm
