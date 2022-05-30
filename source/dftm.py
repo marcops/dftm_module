@@ -49,7 +49,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                         iram_send.next = 1
                     if ext_intf.wr_i:
                         ram[ext_intf.addr_i].next = int(ext_intf.data_i)
-                        print("WR", ext_intf.addr_i, "-", ext_intf.data_i)
+                        #print("WR", ext_intf.addr_i, "-", ext_intf.data_i)
                         ext_intf.done_o.next = 0
                         iram_send.next = 1
             else:
@@ -68,7 +68,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                 sdram_mod1.addr_i.next = ext_intf.addr_i            
                 sdram_mod1.rd_i.next = ext_intf.rd_i
                 sdram_mod1.wr_i.next = ext_intf.wr_i
-                sdram_mod1.data_i.next = ext_intf.data_i
+                sdram_mod1.data_i.next = ecc.encode(ext_intf.data_i, recode_to_ecc)
                 #print_sig("r",sdram_mod1)
                 if sdram_mod1.rdPending_o == 1:
                     in_read.next = 1
