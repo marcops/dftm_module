@@ -62,13 +62,14 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                     ram_inf = ram[iram_current_position]
                     #print("RAM POS", iram_current_position, "-",ram_inf)
                     is_dynamic = dftm_ram.get_configuration(ram_inf)
-                    is_dynamic = 1
+                   # print("IS DYNAMIC" + str(is_dynamic))
                     current_encode = dftm_ram.get_encode(ram_inf)
                 #print("CUR-ENCODE", host_intf.addr_i, "-",current_encode)
                 sdram_mod1.addr_i.next = ext_intf.addr_i            
                 sdram_mod1.rd_i.next = ext_intf.rd_i
                 sdram_mod1.wr_i.next = ext_intf.wr_i
-                sdram_mod1.data_i.next = ecc.encode(ext_intf.data_i, recode_to_ecc)
+                ecc_val = ecc.encode(ext_intf.data_i, recode_to_ecc)
+                sdram_mod1.data_i.next = ecc_val[WORD_SIZE_WITH_ECC:]
                 #print_sig("r",sdram_mod1)
                 if sdram_mod1.rdPending_o == 1:
                     in_read.next = 1
