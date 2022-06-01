@@ -13,7 +13,6 @@ class dftm_ram():
         else:
             print("enc+1:",enc)
             return enc + 1
-
     def get_encode(mem):
         return mem>>1
     def get_configuration(mem):

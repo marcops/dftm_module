@@ -46,7 +46,23 @@ def test_hamming_encode():
 
         #print(str(i) + ") "+ str(int(v) == int(nr)))
 
+def test_LPC_encode():
+    v = 64211
+    vi = intbv(v,None,None, WORD_SIZE)
+    for i in range(0,WORD_SIZE_WITH_ECC):
+        
+        r = ecc.encode(vi, ECC_LPC_WITHOUT_PARITY)
+        #print(bin(r))
+        isOK = ecc.check(r, ECC_LPC_WITHOUT_PARITY)
+        rs = (r ^ (1 << i))
+        nOK = ecc.check(rs, ECC_LPC_WITHOUT_PARITY)
+        nr = ecc.decode(r, ECC_LPC_WITHOUT_PARITY)
+       # print(hex(v), "-", r , " - ", nr , " - ", rs)
+        t_asset_hex(str(i) + ")test_LPC_encode - nok" , nOK, False)
+        t_asset_hex(str(i) + ")test_LPC_encode - ok" , isOK, True)
+        t_asset_hex(str(i) + ")test_LPC_encode - same value" , int(vi), int(nr))
 
-test_parity_encode()
-test_hamming_encode()
-test_none_encode()
+test_LPC_encode()
+#test_parity_encode()
+#test_hamming_encode()
+#test_none_encode()

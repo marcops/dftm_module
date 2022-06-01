@@ -64,13 +64,22 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                     is_dynamic = dftm_ram.get_configuration(ram_inf)
                    # print("IS DYNAMIC" + str(is_dynamic))
                     current_encode = dftm_ram.get_encode(ram_inf)
+
                 #print("CUR-ENCODE", host_intf.addr_i, "-",current_encode)
                 sdram_mod1.addr_i.next = ext_intf.addr_i            
                 sdram_mod1.rd_i.next = ext_intf.rd_i
                 sdram_mod1.wr_i.next = ext_intf.wr_i
                 ecc_val = ecc.encode(ext_intf.data_i, recode_to_ecc)
                 sdram_mod1.data_i.next = ecc_val[WORD_SIZE_WITH_ECC:]
-                #print_sig("r",sdram_mod1)
+                
+                if ecc.is_double_encode(current_encode):
+                    sdram_mod2.addr_i.next = ext_intf.addr_i
+                    sdram_mod2.rd_i.next = ext_intf.rd_i
+                    sdram_mod2.wr_i.next = ext_intf.wr_i
+                    sdram_mod2.data_i.next = ecc_val[WORD_DOUBLE_SIZE_WITH_ECC:WORD_SIZE_WITH_ECC]
+                    #print(ecc_val[WORD_SIZE_WITH_ECC:])
+                    #print(ecc_val[WORD_DOUBLE_SIZE_WITH_ECC:WORD_SIZE_WITH_ECC])
+                #print(ecc_val)
                 if sdram_mod1.rdPending_o == 1:
                     in_read.next = 1
 
@@ -78,15 +87,21 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                     if in_read == 0:
                         ext_intf.done_o.next = sdram_mod1.done_o
                     else:  
-                        in_read.next = 0                    
-                        decode_ok = ecc.check(sdram_mod1.data_o, current_encode)
+                        in_read.next = 0
+
+                        n_data_o = intbv(int(sdram_mod1.data_o))[WORD_DOUBLE_SIZE_WITH_ECC:]
+                        if ecc.is_double_encode(current_encode):
+                            n_data_o |= ( sdram_mod2.data_o << WORD_SIZE_WITH_ECC)
+                            
+                        #print(n_data_o)
+                        decode_ok = ecc.check(n_data_o, current_encode)
                         
                         #TODO DEBUG BITFLIP AT ADDRESS 120 
                         if ext_intf.addr_i == 120:
                             decode_ok = 0
 
                         if decode_ok:
-                            ext_intf.data_o.next = ecc.decode(sdram_mod1.data_o, current_encode)
+                            ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
                             ext_intf.done_o.next = sdram_mod1.done_o
                         else:                        
                             next_encode = dftm_ram.get_next_encode(current_encode)                        
@@ -104,9 +119,11 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                                 recode_count.next = 0
                                 ext_intf.done_o.next = False
                                 sdram_mod1.rd_i.next = False
+                                if ecc.is_double_encode(current_encode):
+                                    sdram_mod2.rd_i.next = False
                                 #sdram_mod1.wr_i.next = False
                             else:
-                                ext_intf.data_o.next = ecc.decode(sdram_mod1.data_o, current_encode)
+                                ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
                                 ext_intf.done_o.next = sdram_mod1.done_o
                                 in_read.next = 0
                 else:
@@ -127,6 +144,10 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                 print(current_recoding_mode, recoding_current_address)
                 sdram_mod1.addr_i.next = recoding_current_address
                 sdram_mod1.rd_i.next = 1
+                if ecc.is_double_encode(recode_from_ecc):
+                    sdram_mod2.addr_i.next = recoding_current_address
+                    sdram_mod2.rd_i.next = 1
+
                 current_recoding_mode.next = RECODING_MODE.WAIT_READ
 
             #if current_recoding_mode == RECODING_MODE.WAIT_READ:
@@ -135,33 +156,49 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
 
             if current_recoding_mode == RECODING_MODE.WAIT_READ:
                 sdram_mod1.rd_i.next = 0
-                print(current_recoding_mode)
+                if ecc.is_double_encode(recode_from_ecc):
+                    sdram_mod2.rd_i.next = 0
+#                print(current_recoding_mode)
                 if sdram_mod1.done_o:
+                    n_data_o = intbv(int(sdram_mod1.data_o))[WORD_DOUBLE_SIZE_WITH_ECC:]
+                    if ecc.is_double_encode(recode_from_ecc):
+                        n_data_o |= ( sdram_mod2.data_o << WORD_SIZE_WITH_ECC)
+
                     current_recoding_mode.next = RECODING_MODE.WRITE
-                    decoded_data = ecc.decode(sdram_mod1.data_o, recode_from_ecc)
+                    decoded_data = ecc.decode(n_data_o, recode_from_ecc)
                     recode_data_o.next = decoded_data
-                    #debug propose
-                    recode_data_o.next = ecc.decode(sdram_mod1.data_o, recode_from_ecc) + 1
+
                     if recode_address == sdram_mod1.addr_i:
                         recode_original_data.next = decoded_data
                     """TODO IGNORING THE DECODE ERROR - Having not todo here ... """
-                    print("RECODING READ ", sdram_mod1.data_o)
+                    print("RECODING READ ", n_data_o)
 
             if current_recoding_mode == RECODING_MODE.WRITE:
                 print(current_recoding_mode)
                 sdram_mod1.addr_i.next = recoding_current_address
+                
                 #recode_current_ecc
-                sdram_mod1.data_i.next = ecc.encode(recode_data_o, recode_to_ecc)
-                print("RECODING WRITE ", sdram_mod1.data_o)
+                ecc_val = ecc.encode(recode_data_o, recode_to_ecc)
+                sdram_mod1.data_i.next = ecc_val[WORD_SIZE_WITH_ECC:]
+                if ecc.is_double_encode(recode_to_ecc):
+                    sdram_mod2.addr_i.next = recoding_current_address
+                    sdram_mod2.data_i.next = ecc_val[WORD_DOUBLE_SIZE_WITH_ECC:WORD_SIZE_WITH_ECC]
+                print("RECODING WRITE ", ecc_val)
                 current_recoding_mode.next = RECODING_MODE.WAIT_WRITE
 
             if current_recoding_mode == RECODING_MODE.WAIT_WRITE:
-                print(current_recoding_mode)
+                #print(current_recoding_mode)
                 sdram_mod1.wr_i.next = 1
+                if ecc.is_double_encode(recode_to_ecc):
+                    sdram_mod2.wr_i.next = 1
 
                 if sdram_mod1.done_o:
                     sdram_mod1.rd_i.next = 0
                     sdram_mod1.wr_i.next = 0
+                    if ecc.is_double_encode(recode_to_ecc):
+                        sdram_mod2.rd_i.next = 0
+                        sdram_mod2.wr_i.next = 0
+
                     r_count =  recode_count +1
                     if r_count < dftm_iram_page_size:
                         current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_1
@@ -169,7 +206,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                     else:
                         """RECODING DONE"""
                         ext_intf.data_o.next = recode_original_data
-                        sdram_mod1.data_o.next = recode_original_data
+                        #sdram_mod1.data_o.next = recode_original_data
                         ext_intf.done_o.next = True
                         current_operation_mode.next = OPERATION_MODE.NORMAL
 
