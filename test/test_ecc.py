@@ -63,6 +63,6 @@ def test_LPC_encode():
         t_asset_hex(str(i) + ")test_LPC_encode - same value" , int(vi), int(nr))
 
 test_LPC_encode()
-#test_parity_encode()
-#test_hamming_encode()
-#test_none_encode()
+test_parity_encode()
+test_hamming_encode()
+test_none_encode()

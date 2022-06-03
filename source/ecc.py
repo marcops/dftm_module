@@ -236,37 +236,36 @@ class ecc():
             sC[3] = sC3[2] | sC3[1] | sC3[0]
 
             if sR[0] == 1 and sC[0] == 1:
-                d[0] = ~d[0]
+                d[0] = not d[0]
             if sR[0] == 0 and sC[1] == 1:
-                d[1] = ~d[1]
+                d[1] = not d[1]
             if sR[0] == 0 and sC[2] == 1:
-                d[2] = ~d[2]
+                d[2] = not d[2]
             if sR[0] == 0 and sC[3] == 1:
-                d[3] = ~d[3]
+                d[3] = not d[3]
             if sR[1] == 1 and sC[0] == 1:
-                d[4] = ~d[4]
+                d[4] = not d[4]
             if sR[1] == 1 and sC[1] == 1:
-                d[5] = ~d[5]
+                d[5] = not d[5]
             if sR[1] == 1 and sC[2] == 1:
-                d[6] = ~d[6]
+                d[6] = not d[6]
             if sR[1] == 1 and sC[3] == 1:
-                d[7] = ~d[7]
+                d[7] = not d[7]
             if sR[2] == 1 and sC[0] == 1:
-                d[8] = ~d[8]
+                d[8] = not d[8]
             if sR[2] == 1 and sC[1] == 1:
-                d[9] = ~d[9]
+                d[9] = not d[9]
             if sR[2] == 1 and sC[2] == 1:
-                d[10] = ~d[10]
+                d[10] = not d[10]
             if sR[2] == 1 and sC[3] == 1:
-                d[11] = ~d[11]
+                d[11] = not d[11]
             if sR[3] == 1 and sC[0] == 1:
-                d[12] = ~d[12]
+                d[12] = not d[12]
             if sR[3] == 1 and sC[1] == 1:
-                d[13] = ~d[13]
+                d[13] = not d[13]
             if sR[3] == 1 and sC[2] == 1:
-                d[14] = ~d[14]
+                d[14] = not d[14]
             if sR[3] == 1 and sC[3] == 1:
-                d[15] = ~d[15]
-           
+                d[15] = not d[15]           
             return d
         return intbv(int(data))[WORD_SIZE:]

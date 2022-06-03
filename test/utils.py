@@ -12,12 +12,37 @@ from dftm import *
 ERR_MEM_DEFAULT = "READ/WRITE with problem"
 ERR_DFTM_MEM_DEFAULT = "DFTM MEM with problem"
 
+
+def bit_flip(host_intf, address, lst_pos):
+    for pos in lst_pos:
+        yield read_bf(host_intf, address)
+        print("READ " , str(host_intf.data_o_ecc))
+        if (host_intf.data_o >>pos) & 1 == 1:
+            n_data = (int(host_intf.data_o_ecc) ^ (1 << pos))
+        else:
+            n_data = (int(host_intf.data_o_ecc) ^ (1 << pos))
+        print("N DATA " , str(n_data))
+        yield write_bf(host_intf, address, n_data)
+
 def t_asset_hex(msg, data, data_expect):
     data = hex(data)
     data_expect = hex(data_expect)
     if data != data_expect:
         print("[TEST FAIL] "+ msg + " rec:" + str(data) + ", expect:" + str(data_expect))
         raise Exception("TEST FAIL")
+
+def read_bf(host_intf, addr):
+    yield host_intf.read_bf(addr)
+    yield host_intf.done_o.posedge
+    yield delay(3)
+    print("[BF-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
+
+def write_bf(host_intf, addr, data):
+    yield host_intf.write_bf(addr, data)
+    yield host_intf.done_o.posedge
+    yield host_intf.nop()
+    yield delay(3)
+    print("[BF-WRITE] addr: " , hex(addr) , ", data: ", hex(data))
 
 def write_dftm_ram(host_intf, addr,data):
     yield host_intf.write_dftm(addr, data)
@@ -46,7 +71,7 @@ def read_ram(host_intf, addr):
     print("[CPU-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
 
 
-def test_run_bench(signal = False, func = None, timesteps = 5000):
+def test_run_bench(signal = False, func = None, timesteps = 5000, output = None):
     if func is None:
         print("TEST FAIL - need a function")
         return;
@@ -67,7 +92,10 @@ def test_run_bench(signal = False, func = None, timesteps = 5000):
     sdramCntl_Inst2 = sdram_cntl(clk_i, host_intf_sdram_Inst2, sd_intf_Inst2)
 
     dftm_Inst = dftm(clk_i, ext_intf_Inst, host_intf_sdram_Inst1, host_intf_sdram_Inst2)
-    test_readWrite_Inst = func(ext_intf_Inst)
+    if output is not None:
+        test_readWrite_Inst = func(ext_intf_Inst, output)
+    else:
+        test_readWrite_Inst = func(ext_intf_Inst)
     if signal:
         dftm_Inst = traceSignals(dftm_Inst,sdramCntl_Inst1,sdramCntl_Inst2, ext_intf_Inst, sd_intf_Inst1, sd_intf_Inst2)
 

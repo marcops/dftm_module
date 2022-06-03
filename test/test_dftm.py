@@ -71,15 +71,18 @@ def tst_2BF_CD_NONE(host_intf):
         yield delay(140)
         # configuration DFTM
         for i in range(5):
-            yield write_dftm_ram(host_intf, i, 1)
+            yield write_dftm_ram(host_intf, i, 3)
 
         # starting mem access
+        #parity
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
         
+        #not fixable
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_2BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 0x1f)
 
         #check
         yield read_dftm_ram(host_intf, 0)
@@ -93,16 +96,20 @@ def tst_3BF_CD_NONE(host_intf):
         yield delay(140)
         # configuration DFTM
         for i in range(5):
-            yield write_dftm_ram(host_intf, i, 1)
+            yield write_dftm_ram(host_intf, i, 3)
 
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
-        
+        #not fixable - Parity
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
-        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
+        t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 0x1f)
 
+        #fixable - hamming
+        yield write_ram(host_intf, 120, 23)
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_3BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
 
@@ -117,19 +124,27 @@ def tst_4BF_CD_NONE(host_intf):
         yield delay(140)
         # configuration DFTM
         for i in range(5):
-            yield write_dftm_ram(host_intf, i, 1)
+            yield write_dftm_ram(host_intf, i, 3)
 
         # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
-        
+        #not fixable - Parity
+        yield bit_flip(host_intf, 120, [8])
+        yield read_ram(host_intf, 120)
+        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 0x1f)
+
+        #fixable - hamming
+        yield write_ram(host_intf, 120, 23)
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
 
-        yield read_ram(host_intf, 120)
-        t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
 
+        #fixable - LPC
+        yield write_ram(host_intf, 120, 23)
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_4BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
 
@@ -144,22 +159,34 @@ def tst_5BF_CD_NONE(host_intf):
         yield delay(140)
         # configuration DFTM
         for i in range(5):
-            yield write_dftm_ram(host_intf, i, 1)
+            yield write_dftm_ram(host_intf, i, 3)
 
-        # starting mem access
+       # starting mem access
         yield write_ram(host_intf, 120, 23)
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
-        
+        #not fixable - Parity
+        yield bit_flip(host_intf, 120, [8])
+        yield read_ram(host_intf, 120)
+        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 0x1f)
+
+        #fixable - hamming
+        yield write_ram(host_intf, 120, 23)
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
 
+
+        #fixable - LPC
+        yield write_ram(host_intf, 120, 23)
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
 
-        yield read_ram(host_intf, 120)
-        t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
-        
+
+        #KEEP ON LPC - fixable 
+        yield write_ram(host_intf, 120, 23)
+        yield bit_flip(host_intf, 120, [8])
         yield read_ram(host_intf, 120)
         t_asset_hex("tst_5BF_CD_NONE " + ERR_MEM_DEFAULT, host_intf.data_o, 23)
 
