@@ -25,9 +25,10 @@ def test_readwrite(host_intf):
         
     @instance
     def test():
+        address = 0
         yield delay(140)    
-        yield write(120, 23)        
-        yield read(120)
+        yield write(address, 23)        
+        yield read(address)
         yield read(5)
         yield write(5, 3)        
         yield read(5)

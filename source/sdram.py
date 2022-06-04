@@ -106,16 +106,17 @@ def sdram(clk, sd_intf, show_command=False):
         if curr_state[bs.val].get_state() == states.Uninitialized:
             print( " SDRAM : [ERROR] Bank is not in a good state. Too bad for you")
             return None
-        curr_state[bs.val].active_row = addr.val
+        #curr_state[bs.val].active_row = addr.val
+        curr_state[bs.val].active_row = True
 
     def read(bs, addr):
-        if curr_state[bs.val].active_row == None:
+        if not curr_state[bs.val].active_row:
             print( " SDRAM : [ERROR] A row should be activated before trying to read")
         else:
             print( " SDRAM : [READ]", addr, " Command registered ")
 
     def write(bs, addr):
-        if curr_state[bs.val].active_row == None:
+        if not curr_state[bs.val].active_row:
             print( " SDRAM : [ERROR] A row should be activated before trying to write", addr)
 
     def precharge(bs, addr):
@@ -214,7 +215,7 @@ class State:
             if self.wait >= CAS_CYCLES_C - 1:
                 self.state = states.Read_rdy
                 self.wait = 0
-                if self.active_row != None:
+                if self.active_row:
                     if self.active_row * 10000 + self.addr in self.memory:
                         self.data = self.memory[self.active_row * 10000 + self.addr]
                     else:
@@ -230,7 +231,7 @@ class State:
             if self.wait >= RCD_CYCLES_C:
                 self.state = states.Idle
                 self.wait = 0
-                if self.active_row != None:
+                if self.active_row:
                     print( " DATA  : [WRITE] Addr:", self.addr, " Data:", self.data)
                     self.memory[self.active_row * 10000 + self.addr] = self.data
 
