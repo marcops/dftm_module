@@ -14,6 +14,7 @@ def test_readwrite(clk, sd_intf):
 
     @instance
     def test():
+        address = 0
         sd_intf.cke.next = 1
         yield sd_intf.nop(clk)
         yield delay(10000)
@@ -23,11 +24,11 @@ def test_readwrite(clk, sd_intf):
         yield sd_intf.nop(clk)
         yield delay(10000)
 
-        yield sd_intf.write(clk, driver, 20, 31)
+        yield sd_intf.write(clk, driver, address, 31)
 
         yield sd_intf.nop(clk)
         yield delay(100)
-        yield sd_intf.read(clk, 20)
+        yield sd_intf.read(clk, address)
 
         yield sd_intf.nop(clk)
         yield delay(4)

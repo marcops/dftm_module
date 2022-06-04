@@ -109,13 +109,13 @@ def sdram(clk, sd_intf, show_command=False):
         curr_state[bs.val].active_row = addr.val
 
     def read(bs, addr):
-        if not curr_state[bs.val].active_row:
+        if curr_state[bs.val].active_row == None:
             print( " SDRAM : [ERROR] A row should be activated before trying to read")
         else:
             print( " SDRAM : [READ]", addr, " Command registered ")
 
     def write(bs, addr):
-        if not curr_state[bs.val].active_row:
+        if curr_state[bs.val].active_row == None:
             print( " SDRAM : [ERROR] A row should be activated before trying to write", addr)
 
     def precharge(bs, addr):
@@ -214,7 +214,7 @@ class State:
             if self.wait >= CAS_CYCLES_C - 1:
                 self.state = states.Read_rdy
                 self.wait = 0
-                if self.active_row:
+                if self.active_row != None:
                     if self.active_row * 10000 + self.addr in self.memory:
                         self.data = self.memory[self.active_row * 10000 + self.addr]
                     else:
@@ -230,7 +230,7 @@ class State:
             if self.wait >= RCD_CYCLES_C:
                 self.state = states.Idle
                 self.wait = 0
-                if self.active_row:
+                if self.active_row != None:
                     print( " DATA  : [WRITE] Addr:", self.addr, " Data:", self.data)
                     self.memory[self.active_row * 10000 + self.addr] = self.data
 
