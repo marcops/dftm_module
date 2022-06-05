@@ -6,7 +6,7 @@ from myhdl import *
 from clk_driver import clk_driver
 from sd_intf import SdramIntf
 from sdram import sdram
-
+from  utils import *
 
 def test_readwrite(clk, sd_intf):
 
@@ -14,25 +14,36 @@ def test_readwrite(clk, sd_intf):
 
     @instance
     def test():
-        address = 0
+       
         sd_intf.cke.next = 1
         yield sd_intf.nop(clk)
         yield delay(10000)
         yield sd_intf.load_mode(clk)
-        yield sd_intf.nop(clk)
-        yield sd_intf.activate(clk, 17)
-        yield sd_intf.nop(clk)
-        yield delay(10000)
+        
+        for p in range(4):
+            yield sd_intf.nop(clk)
+            yield sd_intf.activate(clk, 17, bank_id=p)
+            yield sd_intf.nop(clk)
+            yield delay(100)
 
-        yield sd_intf.write(clk, driver, address, 31)
+        while True:
+            address = get_random_address()
+            print(address)
+            bank_id = int(address/8192)
+            address = address %8192
+            print(address)            
+            print(bank_id)
+            data = get_random_data()
 
-        yield sd_intf.nop(clk)
-        yield delay(100)
-        yield sd_intf.read(clk, address)
+            yield sd_intf.write(clk, driver, address, data,bank_id=bank_id)
 
-        yield sd_intf.nop(clk)
-        yield delay(4)
-        print ("sd_intf dq = ", sd_intf.dq.val, " @ ", now())
+            yield sd_intf.nop(clk)
+            yield delay(100)
+            yield sd_intf.read(clk, address, bank_id)
+
+            yield sd_intf.nop(clk)
+            yield delay(4)
+            print ("sd_intf dq = ", sd_intf.dq.val, " @ ", now())
 
     return test
 

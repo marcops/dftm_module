@@ -1,5 +1,5 @@
 import sys
-
+import random
 from myhdl import Signal, delay, instance
 sys.path.insert(0, 'source')
 sys.path.insert(1, 'source/interface')
@@ -12,6 +12,10 @@ from dftm import *
 ERR_MEM_DEFAULT = "READ/WRITE with problem"
 ERR_DFTM_MEM_DEFAULT = "DFTM MEM with problem"
 
+def get_random_address():
+    return random.randint(0, 32000)
+def get_random_data():
+    return random.randint(0, 65534)
 
 def bit_flip(host_intf, address, lst_pos):
     for pos in lst_pos:

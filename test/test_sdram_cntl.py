@@ -22,9 +22,11 @@ def test_readwrite(host_intf):
         while True:
             address = get_random_address()
             data = get_random_data()
-            yield delay(140)    
+            #yield delay(140)    
             yield write_ram(host_intf, address, data)        
+            
             yield read_ram(host_intf, address)
+            yield delay(100)
            
     return test
 

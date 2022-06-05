@@ -30,6 +30,7 @@ def test_dftm_probability(host_intf, output):
             data = get_random_data()
             yield write_ram(host_intf, address, data)
             yield read_ram(host_intf, address)
+            yield delay(50)
             #t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, data)
 
 
@@ -48,7 +49,7 @@ try:
     print("-------------------------------")
     print("STARTING WITH PROBABILITY: " + str(PROBABILITY) + "%")
     print("-------------------------------")
-    test_run_bench(func=test_dftm_probability, timesteps=35000, output=result)
+    test_run_bench(func=test_dftm_probability, timesteps=145000, output=result)
 
     print("-------------------------------")
     print("PROBABILITY: " + str(PROBABILITY) + "%")
