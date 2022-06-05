@@ -67,7 +67,7 @@ def read_dftm_ram(host_intf, addr):
 def read_ram(host_intf, addr):
     yield host_intf.read(addr)
     yield host_intf.done_o.posedge
-    #yield delay(3)
+    yield delay(3)
     print("[CPU-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
 
 
