@@ -18,7 +18,7 @@ def bit_flip(host_intf, address, lst_pos):
         yield read_bf(host_intf, address)
         print("READ " , str(host_intf.data_o_ecc))
         if (host_intf.data_o >>pos) & 1 == 1:
-            n_data = (int(host_intf.data_o_ecc) ^ (1 << pos))
+            n_data = (int(host_intf.data_o_ecc) ^ (0 << pos))
         else:
             n_data = (int(host_intf.data_o_ecc) ^ (1 << pos))
         print("N DATA " , str(n_data))
@@ -54,7 +54,7 @@ def write_ram(host_intf, addr,data):
     yield host_intf.write(addr, data)
     yield host_intf.done_o.posedge
     yield host_intf.nop()
-    yield delay(3)
+    yield delay(5)
     print("[CPU-WRITE] addr: " , hex(addr) , ", data: ", hex(data))
 
 def read_dftm_ram(host_intf, addr):
@@ -67,7 +67,7 @@ def read_dftm_ram(host_intf, addr):
 def read_ram(host_intf, addr):
     yield host_intf.read(addr)
     yield host_intf.done_o.posedge
-    yield delay(3)
+    #yield delay(3)
     print("[CPU-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
 
 

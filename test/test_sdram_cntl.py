@@ -1,4 +1,6 @@
 import sys
+import random
+from utils import *
 sys.path.insert(0, 'source')
 sys.path.insert(1, 'source/interface')
 
@@ -10,28 +12,20 @@ from sdram_cntl import *
 
 def test_readwrite(host_intf):
 
-    def write(addr,data):
-        yield host_intf.write(addr, data)
-        yield host_intf.done_o.posedge
-        yield host_intf.nop()
-        yield delay(5)
-        print("[CPU-WRITE] addr: " , hex(addr) , ", data: ", hex(data))
+    def get_random_address():
+        return random.randint(0, 65534)
+    def get_random_data():
+        return random.randint(0, 65534)
 
-    def read(addr):
-        yield host_intf.read(addr)
-        yield host_intf.done_o.posedge
-        #yield delay(140)
-        print("[CPU-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
-        
     @instance
     def test():
-        address = 0
-        yield delay(140)    
-        yield write(address, 23)        
-        yield read(address)
-        yield read(5)
-        yield write(5, 3)        
-        yield read(5)
+        while True:
+            address = get_random_address()
+            data = get_random_data()
+            yield delay(140)    
+            yield write_ram(host_intf, address, data)        
+            yield read_ram(host_intf, address)
+           
     return test
 
 clk_i = Signal(bool(0))
@@ -48,4 +42,4 @@ sdramCntl_Inst = sdram_cntl(clk_i, host_intf_Inst, sd_intf_Inst)
 test_readWrite_Inst = test_readwrite(host_intf_Inst)
 
 sim = Simulation(clkDriver_Inst, sdram_Inst, sdramCntl_Inst, test_readWrite_Inst)
-sim.run(7500)
+sim.run(100000)
