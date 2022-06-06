@@ -3,12 +3,13 @@ import random
 
 PROBABILITY = 0.1
 SEED_NUMBER = 10
-MAX_ADDRESS = 65534
+MAX_ADDRESS = 32000
 MAX_DATA = 65534
 def test_dftm_probability(host_intf, output):
-
+    
     def configure_dftm():
-        for i in range(5):
+        total_of_pages = 128
+        for i in range(total_of_pages):
             yield write_dftm_ram(host_intf, i, (3<<1))
     
     def get_random_address():
@@ -29,17 +30,16 @@ def test_dftm_probability(host_intf, output):
             address = get_random_address()
             data = get_random_data()
             yield write_ram(host_intf, address, data)
+            yield read_ram(host_intf, address)            
+            t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, data)
+            #
+
+            yield bit_flip(host_intf, address, [8])
             yield read_ram(host_intf, address)
-            yield delay(50)
-            #t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, data)
-
-
-            #yield bit_flip(host_intf, address, [8])
-   
-            #yield read_ram(host_intf, address)
-            #t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, DATA_TO_WRITE)
+            
+            t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, data)
             output['TOTAL_OF_CYCLES'] = TOTAL_OF_CYCLES
-    
+            yield delay(350)
     return test
 
 
@@ -49,7 +49,7 @@ try:
     print("-------------------------------")
     print("STARTING WITH PROBABILITY: " + str(PROBABILITY) + "%")
     print("-------------------------------")
-    test_run_bench(func=test_dftm_probability, timesteps=145000, output=result)
+    test_run_bench(func=test_dftm_probability, timesteps=1450000, output=result)
 
     print("-------------------------------")
     print("PROBABILITY: " + str(PROBABILITY) + "%")

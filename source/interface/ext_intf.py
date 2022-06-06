@@ -39,6 +39,7 @@ class ExtIntf(object):
 
     def read_dftm(self, addr):
         self.bf_i.next = 0
+        self.wr_i.next = 0    
         self.dftm_i.next = 1
         self.addr_i.next = addr
         self.rd_i.next = 1
@@ -47,10 +48,11 @@ class ExtIntf(object):
 
     def write_dftm(self, addr, data):
         self.bf_i.next = 0
+        self.rd_i.next = 0            
         self.dftm_i.next = 1
         self.addr_i.next = addr
-        self.data_i.next = data
-        self.wr_i.next = 1
+        self.data_i.next = data        
+        self.wr_i.next = 1  
         yield delay(3)
         self.wr_i.next = 0
 

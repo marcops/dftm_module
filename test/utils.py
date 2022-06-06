@@ -20,13 +20,14 @@ def get_random_data():
 def bit_flip(host_intf, address, lst_pos):
     for pos in lst_pos:
         yield read_bf(host_intf, address)
-        print("READ " , str(host_intf.data_o_ecc))
+        #print("READ " , str(host_intf.data_o_ecc))
         if (host_intf.data_o >>pos) & 1 == 1:
             n_data = (int(host_intf.data_o_ecc) ^ (0 << pos))
         else:
             n_data = (int(host_intf.data_o_ecc) ^ (1 << pos))
-        print("N DATA " , str(n_data))
+        #print("N DATA " , str(n_data))
         yield write_bf(host_intf, address, n_data)
+        yield delay(10)
 
 def t_asset_hex(msg, data, data_expect):
     data = hex(data)

@@ -112,8 +112,8 @@ def sdram(clk, sd_intf, show_command=False):
     def read(bs, addr):
         if not curr_state[bs.val].active_row:
             print( " SDRAM : [ERROR] A row should be activated before trying to read")
-        else:
-            print( " SDRAM : [READ]", addr, " Command registered ")
+        #else:
+        #    print( " SDRAM : [READ]", addr, " Command registered ")
 
     def write(bs, addr):
         if not curr_state[bs.val].active_row:
@@ -220,7 +220,7 @@ class State:
                         self.data = self.memory[self.active_row * 10000 + self.addr]
                     else:
                         self.data = 0
-                print( " STATE : [READ] Data Ready @ ", now(), ", add :", self.addr,  " value : ", self.data)
+                #print( " STATE : [READ] Data Ready @ ", now(), ", add :", self.addr,  " value : ", self.data)
 
         elif self.state == states.Read_rdy:
                 self.state = states.Idle
@@ -232,7 +232,7 @@ class State:
                 self.state = states.Idle
                 self.wait = 0
                 if self.active_row:
-                    print( " DATA  : [WRITE] Addr:", self.addr, " Data:", self.data)
+                    #print( " DATA  : [WRITE] Addr:", self.addr, " Data:", self.data)
                     self.memory[self.active_row * 10000 + self.addr] = self.data
 
     def get_state(self):
