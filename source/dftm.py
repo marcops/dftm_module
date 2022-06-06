@@ -116,9 +116,9 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                         else:                        
                             next_encode = dftm_ram.get_next_encode(current_encode)                        
                             recode = (next_encode != current_encode and is_dynamic == 1)
-                            #print("will recode:", recode)
-                            #print("Code?:",  current_encode, next_encode)
-                            #print("Dyn?:", is_dynamic)
+                            print("will recode:", recode)
+                            print("Code?:",  current_encode, next_encode)
+                            print("Dyn?:", is_dynamic)
                             if recode:
                                 current_operation_mode.next = OPERATION_MODE.RECODING_UP
                                 current_recoding_mode.next = RECODING_MODE.READ
