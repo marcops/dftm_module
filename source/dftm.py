@@ -116,7 +116,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                         if decode_ok:
                             ext_intf.recoded_o.next = False
                             ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
-                            print("OK_DECODING ", n_data_o, " - " , ext_intf.data_o)
+                            #print("OK_DECODING ", n_data_o, " - " , ext_intf.data_o)
                             ext_intf.done_o.next = sdram_mod1.done_o
                         else:                        
                             next_encode = dftm_ram.get_next_encode(current_encode)                        

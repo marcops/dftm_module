@@ -17,33 +17,34 @@ def test_readwrite(clk, sd_intf):
        
         sd_intf.cke.next = 1
         yield sd_intf.nop(clk)
-        yield delay(10000)
+        yield delay(5000)
         yield sd_intf.load_mode(clk)
-        
-        for p in range(4):
+
+        for p in range(4):            
             yield sd_intf.nop(clk)
             yield sd_intf.activate(clk, 17, bank_id=p)
             yield sd_intf.nop(clk)
-            yield delay(100)
-
+            yield delay(10000)
+        #yield delay(10000)
         while True:
             address = get_random_address()
-            print(address)
-            bank_id = int(address/8192)
-            address = address %8192
-            print(address)            
-            print(bank_id)
             data = get_random_data()
 
-            yield sd_intf.write(clk, driver, address, data,bank_id=bank_id)
-
+            print(address)
+            bank_id = int(address/8192)
+            address = address%8192
+            #print(address)            
+            #print(bank_id)
             yield sd_intf.nop(clk)
-            yield delay(100)
+            yield sd_intf.write(clk, driver, address, data,bank_id=bank_id)
+            yield sd_intf.nop(clk)
+            yield delay(10)
             yield sd_intf.read(clk, address, bank_id)
-
             yield sd_intf.nop(clk)
             yield delay(4)
-            print ("sd_intf dq = ", sd_intf.dq.val, " @ ", now())
+            t_asset_hex("test_readwrite ", sd_intf.dq, data)
+            
+            #print ("sd_intf dq = ", sd_intf.dq.val, " @ ", now())
 
     return test
 
@@ -55,4 +56,4 @@ sdram_Inst = sdram(clk, sd_intf_Inst)
 test_readWrite_Inst = test_readwrite(clk, sd_intf_Inst)
 
 sim = Simulation(clk_driver_Inst, sdram_Inst, test_readWrite_Inst)
-sim.run(25000)
+sim.run(125000)

@@ -15,7 +15,7 @@ def test_dftm_probability(host_intf, output):
     def configure_dftm():
         total_of_pages = 128
         for i in range(total_of_pages):
-            yield write_dftm_ram(host_intf, i, (3<<1))
+            yield write_dftm_ram(host_intf, i, 5)
     
     def get_random_address():
         return random.randint(0, MAX_ADDRESS)
@@ -37,7 +37,6 @@ def test_dftm_probability(host_intf, output):
             yield write_ram(host_intf, address, data)
             bf = occur_bf()
             if bf:
-                print("WILL HAVE BF")
                 yield bit_flip(host_intf, address, [8])
 
             yield read_ram(host_intf, address)            
@@ -57,7 +56,7 @@ try:
     print("-------------------------------")
     print("STARTING WITH PROBABILITY: " + str(RANGE_PROBABILITY) + "%")
     print("-------------------------------")
-    test_run_bench(func=test_dftm_probability, timesteps=1450000, output=result)
+    test_run_bench(func=test_dftm_probability, timesteps=1450000, output=result, ctrl_type=1)
 
     print("-------------------------------")
     print("PROBABILITY: " + str(RANGE_PROBABILITY) + "%")

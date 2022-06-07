@@ -7,6 +7,7 @@ sys.path.insert(1, 'source/interface')
 from clk_driver import clk_driver
 from sdram import *
 from sdram_cntl import *
+from sdram_cntl_direct import *
 from dftm import *
 
 ERR_MEM_DEFAULT = "READ/WRITE with problem"
@@ -76,7 +77,7 @@ def read_ram(host_intf, addr):
     print("[CPU-READ] addr: " , hex(addr) , ", data: ", hex(host_intf.data_o))
 
 
-def test_run_bench(signal = False, func = None, timesteps = 5000, output = None):
+def test_run_bench(signal = False, func = None, timesteps = 5000, output = None, ctrl_type = 0):
     if func is None:
         print("TEST FAIL - need a function")
         return;
@@ -93,8 +94,12 @@ def test_run_bench(signal = False, func = None, timesteps = 5000, output = None)
 
     sdram_Inst1 = sdram(clk_i, sd_intf_Inst1, show_command=False)
     sdram_Inst2 = sdram(clk_i, sd_intf_Inst2, show_command=False)
-    sdramCntl_Inst1 = sdram_cntl(clk_i, host_intf_sdram_Inst1, sd_intf_Inst1)
-    sdramCntl_Inst2 = sdram_cntl(clk_i, host_intf_sdram_Inst2, sd_intf_Inst2)
+    if ctrl_type == 0:
+        sdramCntl_Inst1 = sdram_cntl(clk_i, host_intf_sdram_Inst1, sd_intf_Inst1)
+        sdramCntl_Inst2 = sdram_cntl(clk_i, host_intf_sdram_Inst2, sd_intf_Inst2)
+    if ctrl_type == 1:
+        sdramCntl_Inst1 = sdram_cntl_direct(clk_i, host_intf_sdram_Inst1, sd_intf_Inst1)
+        sdramCntl_Inst2 = sdram_cntl_direct(clk_i, host_intf_sdram_Inst2, sd_intf_Inst2)
 
     dftm_Inst = dftm(clk_i, ext_intf_Inst, host_intf_sdram_Inst1, host_intf_sdram_Inst2)
     if output is not None:
