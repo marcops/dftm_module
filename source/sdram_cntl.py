@@ -182,7 +182,8 @@ def sdram_cntl(clk_i, host_intf, sd_intf):
             doactivate_s.next = False
 
         if rdpipeline_r[1] == read_c:
-            sdramdata_x.next = sd_intf.dq
+            if sd_intf.dq != None:
+                sdramdata_x.next = sd_intf.dq
         else:
             sdramdata_x.next = sdramdata_r
 

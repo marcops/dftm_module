@@ -38,41 +38,45 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
     def main():        
         if current_operation_mode == OPERATION_MODE.NORMAL:
             if ext_intf.dftm_i:
-                if iram_send:
-                    ext_intf.done_o.next = 1
-                    iram_send.next = 0
-                else:
-                    if ext_intf.bf_i == 0:
+                if ext_intf.bf_i == 0:
+                    if iram_send:
+                        ext_intf.done_o.next = 1
+                        iram_send.next = 0
+                    else:                    
+                        ext_intf.done_o.next = 0
+                        iram_send.next = 1
                         #memory DFTM
                         if ext_intf.rd_i:
-                            ext_intf.data_o.next = ram[ext_intf.addr_i]
-                            ext_intf.done_o.next = 0
-                            iram_send.next = 1
+                            ext_intf.data_o.next = ram[ext_intf.addr_i]       
+                            print("rd" , ram[ext_intf.addr_i])                    
                         if ext_intf.wr_i:
                             ram[ext_intf.addr_i].next = int(ext_intf.data_i)
-                            #print("WR", ext_intf.addr_i, "-", ext_intf.data_i)
-                            ext_intf.done_o.next = 0
-                            iram_send.next = 1
-                    else:
-                        sdram_mod1.rd_i.next = ext_intf.rd_i
-                        sdram_mod1.wr_i.next = ext_intf.wr_i 
-                        sdram_mod1.addr_i.next = ext_intf.addr_i
-                        sdram_mod1.data_i.next = ext_intf.data_i_ecc
-                        
-                        ext_intf.done_o.next = sdram_mod1.done_o
-                        ext_intf.data_o_ecc.next = sdram_mod1.data_o
+                            print("wd" , int(ext_intf.data_i))                    
+                else:
+                    sdram_mod1.rd_i.next = ext_intf.rd_i
+                    sdram_mod1.wr_i.next = ext_intf.wr_i 
+                    sdram_mod1.addr_i.next = ext_intf.addr_i
+                    sdram_mod1.data_i.next = ext_intf.data_i_ecc
+                    
+                    ext_intf.done_o.next = sdram_mod1.done_o
+                    ext_intf.data_o_ecc.next = sdram_mod1.data_o
             else:
                 #memory SDRAM
                 iram_current_position = dftm_ram.get_position(ext_intf.addr_i, dftm_iram_page_size)
+                
                 current_encode = 0
                 is_dynamic = 0
                 """Accessing a area major than managed, we will read without encode"""
                 if iram_current_position < IRAM_ADDR_AMOUNT:                    
                     ram_inf = ram[iram_current_position]
-                    #print("RAM POS", iram_current_position, "-",ram_inf)
+                    
+                    print("RAM POS 1:", iram_current_position, ram_inf, ext_intf.addr_i, ext_intf.rd_i,ext_intf.wr_i, sdram_mod2.data_i)
+                    print("RAM POS 2:", ext_intf.data_o, ext_intf.done_o,ext_intf.rdPending_o)
                     is_dynamic = dftm_ram.get_configuration(ram_inf)
                    # print("IS DYNAMIC" + str(is_dynamic))
-                    current_encode = dftm_ram.get_encode(ram_inf)                    
+                    current_encode = dftm_ram.get_encode(ram_inf)      
+                    #print("rinfo", current_encode)          
+                    #print("is_dynamic", is_dynamic)
 
                 #print("CUR-ENCODE", host_intf.addr_i, "-",current_encode)
                 sdram_mod1.addr_i.next = ext_intf.addr_i            
@@ -110,8 +114,9 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                             #decode_ok = 0
 
                         if decode_ok:
+                            ext_intf.recoded_o.next = False
                             ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
-                            #print("OK_DECODING ", n_data_o, " - " , ext_intf.data_o)
+                            print("OK_DECODING ", n_data_o, " - " , ext_intf.data_o)
                             ext_intf.done_o.next = sdram_mod1.done_o
                         else:                        
                             next_encode = dftm_ram.get_next_encode(current_encode)                        
@@ -133,8 +138,9 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                                     sdram_mod2.rd_i.next = False
                                 #sdram_mod1.wr_i.next = False
                             else:
+                                ext_intf.recoded_o.next = False
                                 ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
-                                #print("DECODING ", n_data_o, " - " , ext_intf.data_o)
+                                print("DECODING ", n_data_o, " - " , ext_intf.data_o)
                                 ext_intf.done_o.next = sdram_mod1.done_o
                                 in_read.next = 0
                 else:
@@ -177,6 +183,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
 
                     current_recoding_mode.next = RECODING_MODE.WRITE
                     decoded_data = ecc.decode(n_data_o, recode_from_ecc)
+                    ext_intf.recoded_o.next = True
                     recode_data_o.next = decoded_data
 
                     if recode_address == sdram_mod1.addr_i:
