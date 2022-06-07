@@ -16,6 +16,8 @@ class ExtIntf(object):
         self.done_o = Signal(bool(0))
         self.rdPending_o = Signal(bool(0))
         #add iram_dftm
+        
+        self.recoded_o = Signal(bool(0))
         self.dftm_i = Signal(bool(0))
         self.bf_i = Signal(bool(0))
         self.data_i_ecc = Signal(intbv(0)[WORD_SIZE_WITH_ECC:])

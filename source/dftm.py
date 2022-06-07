@@ -48,10 +48,10 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                         #memory DFTM
                         if ext_intf.rd_i:
                             ext_intf.data_o.next = ram[ext_intf.addr_i]       
-                            print("rd" , ram[ext_intf.addr_i])                    
+                            #print("rd" , ram[ext_intf.addr_i])                    
                         if ext_intf.wr_i:
                             ram[ext_intf.addr_i].next = int(ext_intf.data_i)
-                            print("wd" , int(ext_intf.data_i))                    
+                            #print("wd" , int(ext_intf.data_i))                    
                 else:
                     sdram_mod1.rd_i.next = ext_intf.rd_i
                     sdram_mod1.wr_i.next = ext_intf.wr_i 
@@ -70,8 +70,8 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                 if iram_current_position < IRAM_ADDR_AMOUNT:                    
                     ram_inf = ram[iram_current_position]
                     
-                    print("RAM POS 1:", iram_current_position, ram_inf, ext_intf.addr_i, ext_intf.rd_i,ext_intf.wr_i, sdram_mod2.data_i)
-                    print("RAM POS 2:", ext_intf.data_o, ext_intf.done_o,ext_intf.rdPending_o)
+                    #print("RAM POS 1:", iram_current_position, ram_inf, ext_intf.addr_i, ext_intf.rd_i,ext_intf.wr_i, sdram_mod2.data_i)
+                    #print("RAM POS 2:", ext_intf.data_o, ext_intf.done_o,ext_intf.rdPending_o)
                     is_dynamic = dftm_ram.get_configuration(ram_inf)
                    # print("IS DYNAMIC" + str(is_dynamic))
                     current_encode = dftm_ram.get_encode(ram_inf)      
