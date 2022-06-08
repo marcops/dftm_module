@@ -11,7 +11,7 @@ def sdram_cntl_direct(clk_i, host_intf, sd_intf):
     
     iram_send = Signal(bool(0))
     address_read = Signal(intbv(0)[24:0])
-    ram = [Signal(intbv(0)[WORD_SIZE_WITH_ECC:0]) for i in range(32000)]
+    ram = [Signal(intbv(0)[WORD_SIZE_WITH_ECC:0]) for i in range(32001)]
 
     @always(clk_i.posedge)
     def seq_func():

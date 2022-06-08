@@ -108,11 +108,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                             
                         #print(n_data_o)
                         decode_ok = ecc.check(n_data_o, current_encode)
-                        
-                        #TODO DEBUG BITFLIP AT ADDRESS 120 
-                        #if ext_intf.addr_i == 120:
-                            #decode_ok = 0
-
+  
                         if decode_ok:
                             ext_intf.recoded_o.next = False
                             ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
@@ -121,9 +117,10 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                         else:                        
                             next_encode = dftm_ram.get_next_encode(current_encode)                        
                             recode = (next_encode != current_encode and is_dynamic == 1)
-                            print("will recode:", recode)
-                            print("Code?:",  current_encode, next_encode)
-                            print("Dyn?:", is_dynamic)
+                            print("RECODE 1", recode, current_encode, next_encode , iram_current_position)
+                            #print("will recode:", recode)
+                            #print("Code?:",  current_encode, next_encode)
+                            #print("Dyn?:", is_dynamic)
                             if recode:
                                 current_operation_mode.next = OPERATION_MODE.RECODING_UP
                                 current_recoding_mode.next = RECODING_MODE.READ

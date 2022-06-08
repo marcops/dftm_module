@@ -11,16 +11,29 @@ def test_dftm_probability(host_intf, output):
     def occur_bf():
         v = random.randint(0, 99)
         return v < RANGE_PROBABILITY
-
     def configure_dftm():
         total_of_pages = 128
         for i in range(total_of_pages):
-            yield write_dftm_ram(host_intf, i, 5)
-    
-    def get_random_address():
+            yield write_dftm_ram(host_intf, i, 5)    
+    def random_address():
         return random.randint(0, MAX_ADDRESS)
-    def get_random_data():
+    def random_data():
         return random.randint(0, MAX_DATA)
+    def get_list_bf():
+        lst = []
+        amount = random_amount_bf()
+        for i in range(amount):
+            lst.append(random_position_bf())
+        return list( dict.fromkeys(lst) )
+    def random_amount_bf():
+        return random.randint(1, 3)
+    def random_position_bf():
+        return random.randint(0, WORD_SIZE)
+    def lst_2_str(lst):
+        s = ""
+        for i in lst:
+            s += str(i)+","
+        return s
 
     @instance
     def test():
@@ -32,24 +45,23 @@ def test_dftm_probability(host_intf, output):
 
         while True:   
             TOTAL_OF_CYCLES += 1
-            address = get_random_address()
-            data = get_random_data()
+            address = random_address()
+            data = random_data()
             yield write_ram(host_intf, address, data)
             bf = occur_bf()
             if bf:
-                yield bit_flip(host_intf, address, [8])
+                lst = get_list_bf()
+                print("RECODE 0", now(), address, lst_2_str(lst))
+                yield bit_flip(host_intf, address, lst)
 
             yield read_ram(host_intf, address)            
-            t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, data)
+            #t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, data)
+            if bf:
+                print("RECODE 2", data ,host_intf.data_o , data == host_intf.data_o)
             
             output['TOTAL_OF_CYCLES'] = TOTAL_OF_CYCLES
-            if bf:
-                yield delay(350)
-            else:
-                yield delay(100)
+     
     return test
-
-
 
 try:
     result = {}

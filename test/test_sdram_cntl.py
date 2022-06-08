@@ -26,8 +26,7 @@ def test_readwrite(host_intf):
             yield write_ram(host_intf, address, data)        
             
             yield read_ram(host_intf, address)
-            #yield delay(100)
-            t_asset_hex("test_readwrite ", host_intf.data_o, data)
+            yield delay(100)
            
     return test
 
