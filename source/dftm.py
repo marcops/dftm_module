@@ -15,8 +15,13 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000):
     current_operation_mode = Signal(OPERATION_MODE.NORMAL)
     
     """INTERNAL RAM START"""
-    #DYNAMIC + ECC + COUNT_ERROR + AMOUNT_CYCLE
-    IRAM_DATA_SIZE = 1 + 2 + 5 + 32
+    #IRAM_DATA_SIZE = 1 + 2 + 5 + 32
+    IRAM_SIZE_DYNAMIC = 1
+    IRAM_SIZE_ECC = 2
+    IRAM_SIZE_COUNT_ERROR = 3
+    IRAM_SIZE_AMOUNT_CYCLE = 32
+    IRAM_DATA_SIZE = IRAM_SIZE_DYNAMIC + IRAM_SIZE_ECC + IRAM_SIZE_COUNT_ERROR + IRAM_SIZE_AMOUNT_CYCLE
+
     IRAM_ADDR_AMOUNT = 4 # * 1000 #96kb
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
@@ -156,7 +161,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000):
             print("RECODING " , recode_position, " - ", recode_count, " - ", recoding_current_address)
             
             if current_recoding_mode == RECODING_MODE.READ:
-                print(current_recoding_mode, recoding_current_address)
+                #print(current_recoding_mode, recoding_current_address)
                 sdram_mod1.addr_i.next = recoding_current_address
                 sdram_mod1.rd_i.next = 1
                 if ecc.is_double_encode(recode_from_ecc):
