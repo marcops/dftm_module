@@ -1,3 +1,9 @@
+#First Version 
+#
+#JUST UP
+# and 3 bits on memory
+#
+
 from myhdl import *
 from dftm_ram import *
 from clk_driver import clk_driver
@@ -9,15 +15,15 @@ from definitions import *
 from enum import Enum
 
 @block
-def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 8000):
+def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
     iram_send = Signal(bool(0))
     OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
     current_operation_mode = Signal(OPERATION_MODE.NORMAL)
     
     """INTERNAL RAM START"""
     IRAM_DATA_SIZE = 3
-    IRAM_ADDR_AMOUNT = 4 # * 1000 #96kb
-    ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
+    #IRAM_ADDR_AMOUNT = 256 # * 1000 #96kb
+    ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(dftm_iram_page_size)]
     """INTERNAL RAM END"""
     
     """RECODE """
@@ -67,7 +73,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 8000):
                 current_encode = 0
                 is_dynamic = 0
                 """Accessing a area major than managed, we will read without encode"""
-                if iram_current_position < IRAM_ADDR_AMOUNT:                    
+                if iram_current_position < dftm_iram_page_size:                    
                     ram_inf = ram[iram_current_position]
                     
                     #print("RAM POS 1:", iram_current_position, ram_inf, ext_intf.addr_i, ext_intf.rd_i,ext_intf.wr_i, sdram_mod2.data_i)
@@ -215,7 +221,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 8000):
                         sdram_mod2.wr_i.next = 0
 
                     r_count =  recode_count +1
-                    if r_count < IRAM_ADDR_AMOUNT:
+                    if r_count < dftm_iram_page_size:
                         current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_1
                         recode_count.next = r_count
                     else:

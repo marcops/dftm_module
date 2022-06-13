@@ -2,17 +2,22 @@ from utils import *
 import random
 
 #prob in percent
-RANGE_PROBABILITY = 1
+#100% = 10000
+# 10% = 1000
+#  1% = 100
+#0.1% = 10
+#0.01% = 1
+RANGE_PROBABILITY = 1 * 100 
 SEED_NUMBER = 10
 MAX_ADDRESS = 32000
 MAX_DATA = 65534
 def test_dftm_probability(host_intf, output):
     
     def occur_bf():
-        v = random.randint(0, 99)
+        v = random.randint(0, 9999)
         return v < RANGE_PROBABILITY
     def configure_dftm():
-        total_of_pages = 4
+        total_of_pages = 128
         for i in range(total_of_pages):
             yield write_dftm_ram(host_intf, i, 5)    
     def random_address():
@@ -28,11 +33,11 @@ def test_dftm_probability(host_intf, output):
     def random_amount_bf():
         return random.randint(1, 3)
     def random_position_bf():
-        return random.randint(0, WORD_SIZE)
+        return random.randint(0, WORD_SIZE-1)
     def lst_2_str(lst):
         s = ""
         for i in lst:
-            s += str(i)+","
+            s += str(i)+"-"
         return s
 
     @instance
@@ -51,7 +56,7 @@ def test_dftm_probability(host_intf, output):
             bf = occur_bf()
             if bf:
                 lst = get_list_bf()
-                print("RECODE 0", now(), address, lst_2_str(lst))
+                print("RECODE 0", now(), address, lst_2_str(lst), len(lst))
                 yield bit_flip(host_intf, address, lst)
 
             yield read_ram(host_intf, address)            
