@@ -1,9 +1,3 @@
-#First Version 
-#
-#JUST UP
-# and 3 bits on memory
-#
-
 from myhdl import *
 from dftm_ram import *
 from clk_driver import clk_driver
@@ -22,8 +16,8 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
     
     """INTERNAL RAM START"""
     IRAM_DATA_SIZE = 3
-    #IRAM_ADDR_AMOUNT = 256 # * 1000 #96kb
-    ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(dftm_iram_page_size)]
+    IRAM_ADDR_AMOUNT = 256 # * 1000 #96kb
+    ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
     
     """RECODE """
@@ -73,7 +67,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                 current_encode = 0
                 is_dynamic = 0
                 """Accessing a area major than managed, we will read without encode"""
-                if iram_current_position < dftm_iram_page_size:                    
+                if iram_current_position < IRAM_ADDR_AMOUNT:                    
                     ram_inf = ram[iram_current_position]
                     
                     #print("RAM POS 1:", iram_current_position, ram_inf, ext_intf.addr_i, ext_intf.rd_i,ext_intf.wr_i, sdram_mod2.data_i)
@@ -221,7 +215,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                         sdram_mod2.wr_i.next = 0
 
                     r_count =  recode_count +1
-                    if r_count < dftm_iram_page_size:
+                    if r_count < IRAM_ADDR_AMOUNT:
                         current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_1
                         recode_count.next = r_count
                     else:
