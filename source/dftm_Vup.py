@@ -215,7 +215,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 256):
                         sdram_mod2.wr_i.next = 0
 
                     r_count =  recode_count +1
-                    if r_count < IRAM_ADDR_AMOUNT:
+                    if r_count < dftm_iram_page_size:
                         current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_1
                         recode_count.next = r_count
                     else:

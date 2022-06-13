@@ -4,7 +4,7 @@ import random
 #prob in percent
 RANGE_PROBABILITY = 1
 SEED_NUMBER = 10
-MAX_ADDRESS = 32000
+MAX_ADDRESS = 8000
 MAX_DATA = 65534
 def test_dftm_probability(host_intf, output):
     

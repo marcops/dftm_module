@@ -9,13 +9,14 @@ from definitions import *
 from enum import Enum
 
 @block
-def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 8000):
+def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000):
     iram_send = Signal(bool(0))
     OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
     current_operation_mode = Signal(OPERATION_MODE.NORMAL)
     
     """INTERNAL RAM START"""
-    IRAM_DATA_SIZE = 3
+    #DYNAMIC + ECC + COUNT_ERROR + AMOUNT_CYCLE
+    IRAM_DATA_SIZE = 1 + 2 + 5 + 32
     IRAM_ADDR_AMOUNT = 4 # * 1000 #96kb
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
     """INTERNAL RAM END"""
@@ -215,7 +216,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 8000):
                         sdram_mod2.wr_i.next = 0
 
                     r_count =  recode_count +1
-                    if r_count < IRAM_ADDR_AMOUNT:
+                    if r_count < dftm_iram_page_size:
                         current_recoding_mode.next = RECODING_MODE.WAIT_WRITE_1
                         recode_count.next = r_count
                     else:
