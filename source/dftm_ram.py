@@ -6,8 +6,8 @@ class dftm_ram():
   
     def get_previous_encode(enc):
         #FIRST_ENCODE = 0
-        if enc <= 0:
-            return 0
+        if enc <= 1:
+            return 1
         else:
             return enc - 1
 
@@ -18,7 +18,8 @@ class dftm_ram():
         else:
             return enc + 1
 
-    def set_cycle(mem, cycle):
+    def set_cycle(mem, r_cycle):
+        cycle = intbv(r_cycle)[32:]
         POS_CYCLE = 8
         mem.next[POS_CYCLE   ] = cycle[ 0]
         mem.next[POS_CYCLE+ 1] = cycle[ 1]
@@ -52,6 +53,7 @@ class dftm_ram():
         mem.next[POS_CYCLE+29] = cycle[29]
         mem.next[POS_CYCLE+30] = cycle[30]
         mem.next[POS_CYCLE+31] = cycle[31]
+    
     def get_cycle(mem):
         POS_CYCLE = 8
         d = intbv(bool(0))[32:]
@@ -90,12 +92,13 @@ class dftm_ram():
         return d
 
     def set_count_error(mem, count):
+        csig = intbv(count)[5:]
         POS_COUNT_ERROR = 3
-        mem.next[POS_COUNT_ERROR] = count[0]
-        mem.next[POS_COUNT_ERROR+1] = count[1]
-        mem.next[POS_COUNT_ERROR+2] = count[2]
-        mem.next[POS_COUNT_ERROR+3] = count[3]
-        mem.next[POS_COUNT_ERROR+4] = count[4]
+        mem.next[POS_COUNT_ERROR] = csig[0]
+        mem.next[POS_COUNT_ERROR+1] = csig[1]
+        mem.next[POS_COUNT_ERROR+2] = csig[2]
+        mem.next[POS_COUNT_ERROR+3] = csig[3]
+        mem.next[POS_COUNT_ERROR+4] = csig[4]
     def get_count_error(mem):
         POS_COUNT_ERROR = 3
         d = intbv(bool(0))[5:]

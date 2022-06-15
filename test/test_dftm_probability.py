@@ -4,7 +4,7 @@ import random
 #prob in percent
 RANGE_PROBABILITY = 1 * 100
 SEED_NUMBER = 10
-MAX_ADDRESS = 8000
+MAX_ADDRESS = 7999
 MAX_DATA = 65534
 def test_dftm_probability(host_intf, output):
     
@@ -14,7 +14,7 @@ def test_dftm_probability(host_intf, output):
     def configure_dftm():
         total_of_pages = 4
         for i in range(total_of_pages):
-            yield write_dftm_ram(host_intf, i, 5)    
+            yield write_dftm_ram(host_intf, i, 3)    
     def random_address():
         return random.randint(0, MAX_ADDRESS)
     def random_data():
