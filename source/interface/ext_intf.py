@@ -16,7 +16,7 @@ class ExtIntf(object):
         self.done_o = Signal(bool(0))
         self.rdPending_o = Signal(bool(0))
         #add iram_dftm
-        
+        self.double_ecc = Signal(bool(0)) 
         self.recoded_o = Signal(bool(0))
         self.dftm_i = Signal(bool(0))
         self.bf_i = Signal(bool(0))

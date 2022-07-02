@@ -4,7 +4,7 @@ def read_file():
         with open('sim.csv', 'w') as writer:
             lines = reader.readlines()
             #count = 0
-            merged_line = "tick address bitflip_pos bitflip_amount will_recode curr_ecc next_ecc block_pos data_write data_rec fixed\n"
+            merged_line = "tick address bitflip_pos qt_err will_recode curr_ecc next_ecc block_pos data_write data_rec fixed\n"
             writer.writelines(merged_line)
             has_one = False
             for line in lines:

@@ -2,7 +2,7 @@ from utils import *
 import random
 
 #prob in percent
-RANGE_PROBABILITY = 1 * 100
+RANGE_PROBABILITY = 0.33 * 100
 SEED_NUMBER = 10
 MAX_ADDRESS = 7999
 MAX_DATA = 65534
@@ -53,11 +53,12 @@ def test_dftm_probability(host_intf, output):
                 lst = get_list_bf()
                 print("RECODE 0", now(), address, lst_2_str(lst))
                 yield bit_flip(host_intf, address, lst)
-
+            else:
+                print("RECODE 0", now(), address, 0)
             yield read_ram(host_intf, address)            
             #t_asset_hex("test_dftm_probability " + ERR_MEM_DEFAULT, host_intf.data_o, data)
-            if bf:
-                print("RECODE 2", data ,host_intf.data_o , data == host_intf.data_o)
+            #if bf:
+            print("RECODE 2", data ,host_intf.data_o , data == host_intf.data_o)
             
             output['TOTAL_OF_CYCLES'] = TOTAL_OF_CYCLES
      
@@ -68,7 +69,7 @@ try:
     print("-------------------------------")
     print("STARTING WITH PROBABILITY: " + str(RANGE_PROBABILITY/100) + "%")
     print("-------------------------------")
-    test_run_bench(func=test_dftm_probability, timesteps=1450000, output=result, ctrl_type=1)
+    test_run_bench(func=test_dftm_probability, timesteps=2000000, output=result, ctrl_type=1)
 
     print("-------------------------------")
     print("PROBABILITY: " + str(RANGE_PROBABILITY) + "%")
