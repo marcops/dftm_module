@@ -148,6 +148,8 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         if decode_ok == False:
                         #err Verilog here
                             n_err = n_err + error_increase
+                            if n_err > 31:
+                                n_err = 31
                             
 
                         if time_diff != 0: 
