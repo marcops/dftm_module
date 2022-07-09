@@ -19,7 +19,9 @@ def read_file():
                     if has_one == False:
                         merged_line += " False 0 0 -1"    
                     merged_line += line[len("RECODE 2"):]
-                    writer.writelines(merged_line)
+                    if merged_line.find("-2") == -1:
+                        writer.writelines(merged_line)
+                    #writer.writelines(merged_line)
                 else:
                     raise("FAIL")
 

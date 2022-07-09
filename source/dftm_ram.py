@@ -56,7 +56,7 @@ class dftm_ram():
     
     def get_cycle(mem):
         POS_CYCLE = 8
-        d = intbv(bool(0))[32:]
+        d = intbv(0)[32:]
         d[ 0] = mem[POS_CYCLE]
         d[ 1] = mem[POS_CYCLE+ 1]
         d[ 2] = mem[POS_CYCLE+ 2]
@@ -101,7 +101,7 @@ class dftm_ram():
         mem.next[POS_COUNT_ERROR+4] = csig[4]
     def get_count_error(mem):
         POS_COUNT_ERROR = 3
-        d = intbv(bool(0))[5:]
+        d = intbv(0)[5:]
         d[0] = mem[POS_COUNT_ERROR]
         d[1] = mem[POS_COUNT_ERROR+1]
         d[2] = mem[POS_COUNT_ERROR+2]
@@ -115,7 +115,7 @@ class dftm_ram():
         mem.next[POS_ENCODE+1] = enc[1]
     def get_encode(mem):
         POS_ENCODE = 1
-        d = intbv(bool(0))[2:]
+        d = intbv(0)[2:]
         d[0] = mem[POS_ENCODE]
         d[1] = mem[POS_ENCODE+1]
         return int(d)

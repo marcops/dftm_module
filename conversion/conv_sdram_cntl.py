@@ -17,4 +17,4 @@ def convert_memory_controller(hdl):
     sdramCntli.convert(hdl)
 
 convert_memory_controller(hdl='VHDL')
-convert_memory_controller(hdl='Verilog')
+#convert_memory_controller(hdl='Verilog')

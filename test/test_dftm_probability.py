@@ -2,14 +2,14 @@ from utils import *
 import random
 
 #prob in percent
-RANGE_PROBABILITY = 0.33 * 100
+RANGE_PROBABILITY = 0.0180 * 10000
 SEED_NUMBER = 10
 MAX_ADDRESS = 7999
 MAX_DATA = 65534
 def test_dftm_probability(host_intf, output):
     
     def occur_bf():
-        v = random.randint(0, 9999)
+        v = random.randint(0, 999999)
         return v < RANGE_PROBABILITY
     def configure_dftm():
         total_of_pages = 4
@@ -44,6 +44,8 @@ def test_dftm_probability(host_intf, output):
         yield configure_dftm()
 
         while True:   
+            #to simulate the same time then the original
+            yield delay(4)        
             TOTAL_OF_CYCLES += 1
             address = random_address()
             data = random_data()
@@ -69,7 +71,7 @@ try:
     print("-------------------------------")
     print("STARTING WITH PROBABILITY: " + str(RANGE_PROBABILITY/100) + "%")
     print("-------------------------------")
-    test_run_bench(func=test_dftm_probability, timesteps=2000000, output=result, ctrl_type=1)
+    test_run_bench(func=test_dftm_probability, timesteps=20100000, output=result, ctrl_type=1)
 
     print("-------------------------------")
     print("PROBABILITY: " + str(RANGE_PROBABILITY) + "%")

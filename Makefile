@@ -4,10 +4,11 @@ HWD_OUTPUT = hwd/
 CONV_CMD = python3 conversion/
 TEST_CMD = python3 test/
 MOVE_HWD = make mv_hwd
+BUILD_VHDL = ghdl -a 
 
 mv_hwd:
 	mv *.vhd $(HWD_OUTPUT)
-	mv *.v $(HWD_OUTPUT)
+#	mv *.v $(HWD_OUTPUT)
 
 test_dftm:
 	sh test/run_all_dftm.sh
@@ -23,6 +24,10 @@ gen_dftm_tb:
 	$(TEST_CMD)test_dftm.py tst_1BF_CD_NONE
 	mv *.vcd $(HWD_OUTPUT)/
 
+gen_ram_hwd:
+	$(CONV_CMD)conv_ram.py
+	$(MOVE_HWD)
+
 gen_sdram_hwd:
 	$(CONV_CMD)conv_sdram_cntl.py
 	$(MOVE_HWD)
@@ -30,6 +35,9 @@ gen_sdram_hwd:
 gen_dftm_hwd:
 	$(CONV_CMD)conv_dftm.py
 	$(MOVE_HWD)
+
+build_dftm:
+	$(BUILD_VHDL) hwd/pck_myhdl_011.vhd  hwd/dftm.vhd 
 
 gen_sdram_cntl: test_sdram_cntl gen_sdram_hwd
 

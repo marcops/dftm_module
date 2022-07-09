@@ -8,16 +8,16 @@ class ecc():
     def is_double_encode(mem):
         return mem > 1
 
-    def encode(d, type):
-        if type == ECC_NONE:
+    def encode(d, current_ecc):
+        if current_ecc == ECC_NONE:
             return intbv(int(d))[WORD_DOUBLE_SIZE_WITH_ECC:]
-        if type == ECC_PARITY:
+        if current_ecc == ECC_PARITY:
             v = intbv((d << DISTANCE_ECC_ONE_MODULE))[WORD_DOUBLE_SIZE_WITH_ECC:]
             v[0] = d[0]^d[1]^d[2]^d[3]^d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]^d[11]^d[12]^d[13]^d[14]^d[15]
             return v
  
-        if type == ECC_HAMMING:
-            p = intbv(bool(0))[DISTANCE_ECC_ONE_MODULE:]
+        if current_ecc == ECC_HAMMING:
+            p = intbv(0)[DISTANCE_ECC_ONE_MODULE:]
             p[0] = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
             p[1] = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
             p[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
@@ -31,7 +31,7 @@ class ecc():
             v[4] = p[4]
             return v
 
-        if type == ECC_LPC_WITHOUT_PARITY:
+        if current_ecc == ECC_LPC_WITHOUT_PARITY:
             v = intbv(int(d))[WORD_DOUBLE_SIZE_WITH_ECC:]
             v[16] = (d[0]^d[1])^d[3]
             v[17] = (d[0]^d[2])^d[3]
@@ -61,26 +61,26 @@ class ecc():
 
         return intbv(int(d))[WORD_DOUBLE_SIZE_WITH_ECC:]
 
-    def check(data, type):
-        if type == ECC_NONE:
+    def check(data, current_ecc):
+        if current_ecc == ECC_NONE:
             return True
 
         #parity check
-        if type == ECC_PARITY:
+        if current_ecc == ECC_PARITY:
             #0+DISTANCE_ECC_ONE_MODULE
             x = data[5]^data[6]^data[7]^data[8]^data[9]^data[10]^data[11]^data[12]^data[13]^data[14]^data[15]^data[16]^data[17]^data[18]^data[19]^data[20]
             return data[0] == x
 
-        if type == ECC_HAMMING:
+        if current_ecc == ECC_HAMMING:
             dh = data[WORD_DOUBLE_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
-            p = intbv(bool(0))[DISTANCE_ECC_ONE_MODULE:]
+            p = intbv(0)[DISTANCE_ECC_ONE_MODULE:]
             p[0] = dh[0]^dh[1]^dh[3]^dh[4]^dh[6]^dh[8]^dh[10]^dh[11]^dh[13]^dh[15]
             p[1] = dh[0]^dh[2]^dh[3]^dh[5]^dh[6]^dh[9]^dh[10]^dh[12]^dh[13]
             p[2] = dh[1]^dh[2]^dh[3]^dh[7]^dh[8]^dh[9]^dh[10]^dh[14]^dh[15]
             p[3] = dh[4]^dh[5]^dh[6]^dh[7]^dh[8]^dh[9]^dh[10]
             p[4] = dh[11]^dh[12]^dh[13]^dh[14]^dh[15]
             return data[DISTANCE_ECC_ONE_MODULE:] == p
-        if type == ECC_LPC_WITHOUT_PARITY:
+        if current_ecc == ECC_LPC_WITHOUT_PARITY:
             #print(bin(data))
             d = data[WORD_SIZE:]
             #print(bin(d))
@@ -135,14 +135,14 @@ class ecc():
             return True
         return False
         
-    def decode(data, type):
-        if type == ECC_NONE:
+    def decode(data, current_ecc):
+        if current_ecc == ECC_NONE:
             return intbv(int(data))[WORD_SIZE:]
-        if type == ECC_PARITY:
+        if current_ecc == ECC_PARITY:
             return intbv(int(data))[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
-        if type == ECC_HAMMING:
+        if current_ecc == ECC_HAMMING:
             d = data[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
-            pg = intbv(bool(0))[DISTANCE_ECC_ONE_MODULE:]
+            pg = intbv(0)[DISTANCE_ECC_ONE_MODULE:]
             pg[0] = d[0]^d[1]^d[3]^d[4]^d[6]^d[8]^d[10]^d[11]^d[13]^d[15]
             pg[1] = d[0]^d[2]^d[3]^d[5]^d[6]^d[9]^d[10]^d[12]^d[13]
             pg[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
@@ -185,19 +185,19 @@ class ecc():
             """end terrible code"""
             return intbv(int(((data) ^ (1 << np)) >> DISTANCE_ECC_ONE_MODULE))[WORD_SIZE:]
 
-        if type == ECC_LPC_WITHOUT_PARITY:
+        if current_ecc == ECC_LPC_WITHOUT_PARITY:
             d = data[WORD_SIZE:]
-            sR0 = intbv(bool(0))[3:]
-            sR1 = intbv(bool(0))[3:]
-            sR2 = intbv(bool(0))[3:]
-            sR3 = intbv(bool(0))[3:]
-            sC0 = intbv(bool(0))[3:]
-            sC1 = intbv(bool(0))[3:]
-            sC2 = intbv(bool(0))[3:]
-            sC3 = intbv(bool(0))[3:]
+            sR0 = intbv(0)[3:]
+            sR1 = intbv(0)[3:]
+            sR2 = intbv(0)[3:]
+            sR3 = intbv(0)[3:]
+            sC0 = intbv(0)[3:]
+            sC1 = intbv(0)[3:]
+            sC2 = intbv(0)[3:]
+            sC3 = intbv(0)[3:]
 
-            sR = intbv(bool(0))[4:]
-            sC = intbv(bool(0))[4:]
+            sR = intbv(0)[4:]
+            sC = intbv(0)[4:]
 
             sR0[2] = data[16] ^ ((d[0]^d[1])^d[3])
             sR0[1] = data[17] ^ ((d[0]^d[2])^d[3])
