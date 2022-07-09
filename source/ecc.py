@@ -137,9 +137,9 @@ class ecc():
         
     def decode(data, current_ecc):
         if current_ecc == ECC_NONE:
-            return intbv(int(data))[WORD_SIZE:]
+            return intbv(data)[WORD_SIZE:]
         if current_ecc == ECC_PARITY:
-            return intbv(int(data))[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
+            return intbv(data)[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
         if current_ecc == ECC_HAMMING:
             d = data[WORD_SIZE_WITH_ECC:DISTANCE_ECC_ONE_MODULE]
             pg = intbv(0)[DISTANCE_ECC_ONE_MODULE:]
@@ -152,7 +152,7 @@ class ecc():
 
             """Terrible code but its fast"""
             if p == 0:
-                return intbv(int(d))[WORD_SIZE:]
+                return intbv(d)[WORD_SIZE:]
             np =0
             if p == 1:
                 np = 0
@@ -183,7 +183,12 @@ class ecc():
             if p>=9 and p <=15:
                 np = p
             """end terrible code"""
-            return intbv(int(((data) ^ (1 << np)) >> DISTANCE_ECC_ONE_MODULE))[WORD_SIZE:]
+            #TODO AQUI
+            va = 1 << np
+            vb = data ^ va
+            vc = vb >> DISTANCE_ECC_ONE_MODULE
+            return intbv(vc)[WORD_SIZE:]
+            #return intbv(1)[WORD_SIZE:]
 
         if current_ecc == ECC_LPC_WITHOUT_PARITY:
             d = data[WORD_SIZE:]
@@ -268,4 +273,4 @@ class ecc():
             if sR[3] == 1 and sC[3] == 1:
                 d[15] = not d[15]           
             return d
-        return intbv(int(data))[WORD_SIZE:]
+        return intbv(data)[WORD_SIZE:]
