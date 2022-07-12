@@ -18,11 +18,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
     
     """INTERNAL RAM START"""
     #IRAM_DATA_SIZE = 1 + 2 + 5 + 32
-    IRAM_SIZE_DYNAMIC = 1
-    IRAM_SIZE_ECC = 2
-    IRAM_SIZE_COUNT_ERROR = 3
-    IRAM_SIZE_AMOUNT_CYCLE = 32
-    IRAM_DATA_SIZE = IRAM_SIZE_DYNAMIC + IRAM_SIZE_ECC + IRAM_SIZE_COUNT_ERROR + IRAM_SIZE_AMOUNT_CYCLE
+    
 
     IRAM_ADDR_AMOUNT = 4 # * 1000 #96kb
     ram = [Signal(intbv(0)[IRAM_DATA_SIZE:0]) for i in range(IRAM_ADDR_AMOUNT)]
@@ -30,7 +26,8 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
     
     """RECODE """
     RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE', 'WAIT_WRITE_1', 'WAIT_WRITE_2')
-    
+    current_time = Signal(intbv(0)[128:])
+
     recode_original_data = Signal(intbv(0)[WORD_SIZE:])
     ecc_counter = Signal(intbv(0)[WORD_SIZE:])
     ECC_DOUBLE_DATA = 7
@@ -46,6 +43,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
 
     @always(clk_i.posedge)
     def main():        
+        current_time.next = current_time + 1
         if current_operation_mode == OPERATION_MODE.NORMAL:
             if ext_intf.dftm_i:
                 if ext_intf.bf_i == 0:
@@ -124,8 +122,9 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         ext_intf.done_o.next = sdram_mod1.done_o
                     else:  
                         in_read.next = 0
-
-                        n_data_o = intbv(int(sdram_mod1.data_o))[WORD_DOUBLE_SIZE_WITH_ECC:]
+                        n_data_o = intbv(0)[WORD_DOUBLE_SIZE_WITH_ECC:]
+                        n_data_o |= sdram_mod1.data_o
+                        #n_data_o = intbv(1)[WORD_DOUBLE_SIZE_WITH_ECC:]
                         if ecc.is_double_encode(current_encode):
                             n_data_o |= (sdram_mod2.data_o << WORD_SIZE_WITH_ECC)
                             
@@ -136,7 +135,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         p_cycle = dftm_ram.get_cycle(ram_inf)
                         p_err = dftm_ram.get_count_error(ram_inf)
                         
-                        cur_cycle = now()//cycle_size
+                        cur_cycle = current_time//cycle_size
                         time_diff = cur_cycle - p_cycle
                         err_decrease = int(time_diff) * error_decrease_by_cycle
                         n_err = p_err - err_decrease
@@ -165,9 +164,11 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         #else:
                         #print("DEBUG_REC", n_err , cur_cycle , current_encode, iram_current_position, now()) 
                         #    n_err = 0
+                        #pre_value = dftm_ram.set_count_error(int(ram[iram_current_position]), n_err)
+                        #ram[iram_current_position].next = dftm_ram.set_cycle(int(pre_value),cur_cycle)
+                        ram[iram_current_position].next = dftm_ram.set_cycle_err(ram[iram_current_position],cur_cycle, n_err)
                         
-                        dftm_ram.set_count_error(ram_inf, n_err)
-                        dftm_ram.set_cycle(ram_inf,cur_cycle)
+
                         #have to recode End
                         
 
@@ -176,10 +177,10 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                             ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
                             #print("OK_DECODING ", n_data_o, " - " , ext_intf.data_o)
                             ext_intf.done_o.next = sdram_mod1.done_o
-                            if time_diff == 0: 
-                                print("RECODE 1",  n_err,False, current_encode, -2 , iram_current_position)
-                            else:
-                                print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
+                            #if time_diff == 0: 
+                            #    print("RECODE 1",  n_err,False, current_encode, -2 , iram_current_position)
+                            #else:
+                            #    print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
                         else:           
                             next_encode = dftm_ram.get_previous_encode(current_encode)                            
                             if is_up:
@@ -187,10 +188,10 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                             
                             recode = (next_encode != current_encode and is_dynamic == 1)
                             #print("HERE RECODE" , recode , is_up)
-                            if change_ecc:
-                                print("RECODE 1",  n_err,recode, current_encode, next_encode , iram_current_position)
-                            else:
-                                print("RECODE 1",  n_err,recode, current_encode, current_encode , iram_current_position)
+                            #if change_ecc:
+                            #    print("RECODE 1",  n_err,recode, current_encode, next_encode , iram_current_position)
+                            #else:
+                            #    print("RECODE 1",  n_err,recode, current_encode, current_encode , iram_current_position)
                             #print("will recode:", recode)
                             #print("Code?:",  current_encode, next_encode)
                             #print("Dyn?:", is_dynamic)
@@ -264,7 +265,9 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                     sdram_mod2.rd_i.next = 0
                 #print(current_recoding_mode)
                 if sdram_mod1.done_o:
-                    n_data_o = intbv(int(sdram_mod1.data_o))[WORD_DOUBLE_SIZE_WITH_ECC:]
+                    #n_data_o = intbv(int(sdram_mod1.data_o))[WORD_DOUBLE_SIZE_WITH_ECC:]
+                    #TODO AQUI
+                    n_data_o = intbv(1)[WORD_DOUBLE_SIZE_WITH_ECC:]
                     if ecc.is_double_encode(recode_from_ecc):
                         n_data_o |= ( sdram_mod2.data_o << WORD_SIZE_WITH_ECC)
 
@@ -316,7 +319,8 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         current_operation_mode.next = OPERATION_MODE.NORMAL
 
                         ram_inf = ram[recode_position]
-                        dftm_ram.set_encode(ram_inf, recode_to_ecc)
+                        ram[recode_position].next = dftm_ram.set_encode(int(ram_inf), recode_to_ecc)
+
                         #Update all?
                         #for.. etc
                         #cur_cycle = now()//cycle_size

@@ -2,7 +2,8 @@ from utils import *
 import random
 
 #prob in percent
-RANGE_PROBABILITY = 0.0180 * 10000
+PROBABILITY_SIZE = 10000
+RANGE_PROBABILITY = 0.0180 * PROBABILITY_SIZE
 SEED_NUMBER = 10
 MAX_ADDRESS = 7999
 MAX_DATA = 65534
@@ -69,7 +70,7 @@ def test_dftm_probability(host_intf, output):
 try:
     result = {}
     print("-------------------------------")
-    print("STARTING WITH PROBABILITY: " + str(RANGE_PROBABILITY/100) + "%")
+    print("STARTING WITH PROBABILITY: " + str(RANGE_PROBABILITY/PROBABILITY_SIZE) + "%")
     print("-------------------------------")
     test_run_bench(func=test_dftm_probability, timesteps=20100000, output=result, ctrl_type=1)
 

@@ -10,9 +10,11 @@ class ecc():
 
     def encode(d, current_ecc):
         if current_ecc == ECC_NONE:
-            return intbv(int(d))[WORD_DOUBLE_SIZE_WITH_ECC:]
+            return intbv(0)[WORD_DOUBLE_SIZE_WITH_ECC:]
         if current_ecc == ECC_PARITY:
-            v = intbv((d << DISTANCE_ECC_ONE_MODULE))[WORD_DOUBLE_SIZE_WITH_ECC:]
+            data_left = (d << DISTANCE_ECC_ONE_MODULE)
+            v = intbv(0)[WORD_DOUBLE_SIZE_WITH_ECC:]
+            v |= data_left
             v[0] = d[0]^d[1]^d[2]^d[3]^d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]^d[11]^d[12]^d[13]^d[14]^d[15]
             return v
  
@@ -23,7 +25,9 @@ class ecc():
             p[2] = d[1]^d[2]^d[3]^d[7]^d[8]^d[9]^d[10]^d[14]^d[15]
             p[3] = d[4]^d[5]^d[6]^d[7]^d[8]^d[9]^d[10]
             p[4] = d[11]^d[12]^d[13]^d[14]^d[15]
-            v = intbv((d << DISTANCE_ECC_ONE_MODULE))[WORD_DOUBLE_SIZE_WITH_ECC:]
+            data_left = (d << DISTANCE_ECC_ONE_MODULE)
+            v = intbv(0)[WORD_DOUBLE_SIZE_WITH_ECC:]
+            v |= data_left
             v[0] = p[0]
             v[1] = p[1]
             v[2] = p[2]
@@ -32,7 +36,24 @@ class ecc():
             return v
 
         if current_ecc == ECC_LPC_WITHOUT_PARITY:
-            v = intbv(int(d))[WORD_DOUBLE_SIZE_WITH_ECC:]
+            v = intbv(0)[WORD_DOUBLE_SIZE_WITH_ECC:]
+            #v |= d
+            v[0] = d[0]
+            v[1] = d[1]
+            v[2] = d[2]
+            v[3] = d[3]
+            v[4] = d[4]
+            v[5] = d[5]
+            v[6] = d[6]
+            v[7] = d[7]
+            v[8] = d[8]
+            v[9] = d[9]
+            v[10] = d[10]
+            v[11] = d[11]
+            v[12] = d[12]
+            v[13] = d[13]
+            v[14] = d[14]
+            v[15] = d[15]
             v[16] = (d[0]^d[1])^d[3]
             v[17] = (d[0]^d[2])^d[3]
             v[18] = (d[1]^d[2])^d[3]
@@ -59,7 +80,7 @@ class ecc():
             v[39] = (d[7]^d[11])^d[15]
             return v
 
-        return intbv(int(d))[WORD_DOUBLE_SIZE_WITH_ECC:]
+        return intbv(0)[WORD_DOUBLE_SIZE_WITH_ECC:]
 
     def check(data, current_ecc):
         if current_ecc == ECC_NONE:
@@ -183,12 +204,17 @@ class ecc():
             if p>=9 and p <=15:
                 np = p
             """end terrible code"""
-            #TODO AQUI
-            va = 1 << np
+            
+            
+            a = intbv(1, min=0, max=WORD_SIZE)
+            va = a.signed() << np
             vb = data ^ va
-            vc = vb >> DISTANCE_ECC_ONE_MODULE
-            return intbv(vc)[WORD_SIZE:]
-            #return intbv(1)[WORD_SIZE:]
+            b = intbv(vb, min=-1, max=WORD_SIZE)
+            vc = b.signed() >> DISTANCE_ECC_ONE_MODULE
+            nv = intbv(0)[WORD_SIZE:]
+            nv |= vc 
+            nv &= 0xFFFF
+            return nv
 
         if current_ecc == ECC_LPC_WITHOUT_PARITY:
             d = data[WORD_SIZE:]

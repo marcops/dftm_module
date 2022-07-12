@@ -17,7 +17,7 @@ def read_file():
                     merged_line += line[len("RECODE 1"):].strip()                    
                 elif line.startswith("RECODE 2"):
                     if has_one == False:
-                        merged_line += " False 0 0 -1"    
+                        merged_line += "0 False 0 0 -1"    
                     merged_line += line[len("RECODE 2"):]
                     if merged_line.find("-2") == -1:
                         writer.writelines(merged_line)

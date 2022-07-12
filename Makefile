@@ -39,6 +39,8 @@ gen_dftm_hwd:
 build_dftm:
 	$(BUILD_VHDL) hwd/pck_myhdl_011.vhd  hwd/dftm.vhd 
 
+gen_build_dftm: gen_dftm_hwd build_dftm
+
 gen_sdram_cntl: test_sdram_cntl gen_sdram_hwd
 
 gen_dftm: gen_dftm_tb gen_dftm_hwd
