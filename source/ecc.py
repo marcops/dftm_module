@@ -6,7 +6,7 @@ from definitions import *
 
 class ecc():
     def is_double_encode(mem):
-        return mem > 1
+        return mem > 2
 
     def encode(d, current_ecc):
         if current_ecc == ECC_NONE:
