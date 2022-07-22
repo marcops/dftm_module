@@ -10,7 +10,7 @@ from enum import Enum
 
 @block
 def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
-    cycle_size = 1000000, error_decrease_by_cycle = 1 , error_increase = 1 , n_error_up = 2 , n_error_down = 0 ):
+    cycle_size = 1000000, error_decrease_by_cycle = 1 , error_increase = 1 , c_parity = 0,  c_hamming = 2, c_lpc = 4 ):
 
     iram_send = Signal(bool(0))
     OPERATION_MODE = enum('NORMAL','RECODING_UP', 'RECODING_DOWN')
@@ -27,7 +27,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
     """RECODE """
     RECODING_MODE = enum('READ', 'WAIT_READ', 'WRITE', 'WAIT_WRITE', 'WAIT_WRITE_1', 'WAIT_WRITE_2')
     current_time = Signal(intbv(0)[128:])
-
+    evaluate_recode = Signal(bool(False))
     recode_original_data = Signal(intbv(0)[WORD_SIZE:])
     ecc_counter = Signal(intbv(0)[WORD_SIZE:])
     ECC_DOUBLE_DATA = 7
@@ -82,10 +82,13 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                     ext_intf.data_o_ecc.next = sdram_mod1.data_o
             else:
                 #memory SDRAM
+                if current_time % cycle_size == 0:
+                    evaluate_recode.next = True
+
                 iram_current_position = dftm_ram.get_position(ext_intf.addr_i, dftm_iram_page_size)
                 #print("RECODE 1.a ", ext_intf.addr_i)
                 current_encode = 0
-                is_dynamic = 0
+                #is_dynamic = 0
                 ram_inf = ram[0]
                 """Accessing a area major than managed, we will read without encode"""
                 if iram_current_position < IRAM_ADDR_AMOUNT:                    
@@ -93,7 +96,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                     
                     #print("RAM POS 1:", iram_current_position, ram_inf, ext_intf.addr_i, ext_intf.rd_i,ext_intf.wr_i, sdram_mod2.data_i)
                     #print("RAM POS 2:", ext_intf.data_o, ext_intf.done_o,ext_intf.rdPending_o)
-                    is_dynamic = dftm_ram.get_configuration(ram_inf)
+                   # is_dynamic = dftm_ram.get_configuration(ram_inf)
                     #print("IS DYNAMIC" + str(is_dynamic))
                     current_encode = dftm_ram.get_encode(ram_inf)      
                     #print("rinfo", current_encode)          
@@ -121,6 +124,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                     if in_read == 0:
                         ext_intf.done_o.next = sdram_mod1.done_o
                     else:  
+                       
                         in_read.next = 0
                         n_data_o = intbv(0)[WORD_DOUBLE_SIZE_WITH_ECC:]
                         n_data_o |= sdram_mod1.data_o
@@ -132,110 +136,119 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         decode_ok = ecc.check(n_data_o, current_encode)
 
                         #have to recode init
-                        p_cycle = dftm_ram.get_cycle(ram_inf)
-                        p_err = dftm_ram.get_count_error(ram_inf)
                         
-                        cur_cycle = current_time//cycle_size
-                        time_diff = cur_cycle - p_cycle
-                        err_decrease = int(time_diff) * error_decrease_by_cycle
-                        n_err = p_err - err_decrease
-                        if n_err < 0:
-                            n_err = 0
-                        change_ecc = False
-                        is_up = False
-
+                      
                         if decode_ok == False:
+                            n_err = dftm_ram.get_count_error(ram_inf)
                         #err Verilog here
                             n_err = n_err + error_increase
                             if n_err > 31:
-                                n_err = 31
-                            
+                                n_err = 31                        
+                            ram[iram_current_position].next = dftm_ram.set_count_error(ram[iram_current_position], n_err)
+                        #    print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
+                        
+                        #debug only
+                        if  evaluate_recode == False:
+                            #debug
+                            n_err = dftm_ram.get_count_error(ram_inf)
+                            print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
 
-                        if time_diff != 0: 
-                            if n_err >= n_error_up:
-                                is_up = True
-                                change_ecc = True
-                            elif n_err <= n_error_down:
-                                is_up = False
-                                change_ecc = True
-                           
-                        
-                        
-                        #else:
-                        #print("DEBUG_REC", n_err , cur_cycle , current_encode, iram_current_position, now()) 
-                        #    n_err = 0
-                        #pre_value = dftm_ram.set_count_error(int(ram[iram_current_position]), n_err)
-                        #ram[iram_current_position].next = dftm_ram.set_cycle(int(pre_value),cur_cycle)
-                        ram[iram_current_position].next = dftm_ram.set_cycle_err(ram[iram_current_position],cur_cycle, n_err)
-                        
-
-                        #have to recode End
-                        
-
-                        if change_ecc == False:
                             ext_intf.recoded_o.next = False
                             ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
                             #print("OK_DECODING ", n_data_o, " - " , ext_intf.data_o)
                             ext_intf.done_o.next = sdram_mod1.done_o
-                            #if time_diff == 0: 
-                            #    print("RECODE 1",  n_err,False, current_encode, -2 , iram_current_position)
-                            #else:
-                            #    print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
-                        else:           
-                            next_encode = dftm_ram.get_previous_encode(current_encode)                            
-                            if is_up:
-                                next_encode = dftm_ram.get_next_encode(current_encode)                        
-                            
-                            recode = (next_encode != current_encode and is_dynamic == 1)
-                            #print("HERE RECODE" , recode , is_up)
-                            #if change_ecc:
-                            #    print("RECODE 1",  n_err,recode, current_encode, next_encode , iram_current_position)
-                            #else:
-                            #    print("RECODE 1",  n_err,recode, current_encode, current_encode , iram_current_position)
-                            #print("will recode:", recode)
-                            #print("Code?:",  current_encode, next_encode)
-                            #print("Dyn?:", is_dynamic)
-                            if recode:
-                                #print("RECODE 1", recode, current_encode, next_encode , iram_current_position)
-                                current_operation_mode.next = OPERATION_MODE.RECODING_DOWN
-                                if is_up:
-                                    current_operation_mode.next = OPERATION_MODE.RECODING_UP 
+                        else:
+                            evaluate_recode.next = False
+                            processed = False
+                            for block_position in range(IRAM_ADDR_AMOUNT):
+                                is_dynamic = dftm_ram.get_configuration(ram_inf)
+                                n_err = dftm_ram.get_count_error(ram[block_position])
+                                current_encode = dftm_ram.get_encode(ram[block_position])
+                                n_err = n_err - error_decrease_by_cycle
+                                if n_err < 0:
+                                    n_err = 0
+                                ram[block_position].next = dftm_ram.set_count_error(ram[block_position], n_err)
 
-                                current_recoding_mode.next = RECODING_MODE.READ
-                                recode_position.next = iram_current_position
-                                recode_address.next = ext_intf.addr_i
-                                recode_from_ecc.next = current_encode
-                                recode_to_ecc.next = next_encode
-                                recode_count.next = 0
-                                ext_intf.done_o.next = False
-                                sdram_mod1.rd_i.next = False
+                                next_encode = current_encode
+                                if current_encode == 1  and n_err >= c_hamming:
+                                    print("OOO hamming + ")
+                                    next_encode = dftm_ram.get_next_encode(current_encode)                        
+                                elif current_encode == 2  and n_err >= c_lpc:
+                                    print("LPC + ")
+                                    next_encode = dftm_ram.get_next_encode(current_encode)                        
+                                elif current_encode == 3  and n_err < c_lpc:
+                                    print("hamming bakc ")
+                                    next_encode = dftm_ram.get_previous_encode(current_encode)    
+                                elif current_encode == 2  and n_err < c_hamming:
+                                    print("parity back ")
+                                    next_encode = dftm_ram.get_previous_encode(current_encode)    
+                                    
+                                    
+                                recode = (next_encode != current_encode and is_dynamic == 1)
 
-                                #3 = LPC
-                                if next_encode == 3 and current_encode == 2:
-                                    ecc_counter.next = ecc_counter + 1
-                                elif next_encode == 2 and current_encode == 3:
-                                    if ecc_counter > 0:
-                                        ecc_counter.next = ecc_counter - 1
+                                if recode and processed == False: 
+                                    n_err = dftm_ram.get_count_error(ram_inf)
+                                    print("RECODE 1",  n_err,True, current_encode, next_encode, block_position)
+                                    processed = True
+                                    #position_change = block_position
+                                    #print("recoding ", block_position)
 
-                                if ecc_counter == 0:
-                                    ext_intf.double_ecc.next = False
-                                else:
-                                    ext_intf.double_ecc.next = True
+                                    #if change_ecc:
+                                        #position_change
+                                    #print("OOO RECODE" , recode , is_up , next_encode , current_encode, current_encode, is_dynamic)
+                                    current_operation_mode.next = OPERATION_MODE.RECODING_DOWN
+                                    if next_encode > current_encode:
+                                        current_operation_mode.next = OPERATION_MODE.RECODING_UP 
 
-                                if ecc.is_double_encode(current_encode):
-                                    sdram_mod2.rd_i.next = False
-                                #sdram_mod1.wr_i.next = False
-                            else:
+                                    current_recoding_mode.next = RECODING_MODE.READ
+                                    recode_position.next = block_position                        
+                                    recode_address.next = block_position * dftm_iram_page_size
+                                    recode_from_ecc.next = current_encode
+                                    recode_to_ecc.next = next_encode
+                                    recode_count.next = 0
+                                    ext_intf.done_o.next = False
+                                    sdram_mod1.rd_i.next = False
+
+                                    #3 = LPC
+                                    if next_encode == 3 and current_encode == 2:
+                                        ecc_counter.next = ecc_counter + 1
+                                    elif next_encode == 2 and current_encode == 3:
+                                        if ecc_counter > 0:
+                                            ecc_counter.next = ecc_counter - 1
+
+                                    if ecc_counter == 0:
+                                        ext_intf.double_ecc.next = False
+                                    else:
+                                        ext_intf.double_ecc.next = True
+
+                                    if ecc.is_double_encode(current_encode):
+                                        sdram_mod2.rd_i.next = False
+                            if processed == False:
+                                n_err = dftm_ram.get_count_error(ram_inf)
+                                print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
+
                                 ext_intf.recoded_o.next = False
                                 ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
-                               #print("DECODING ", n_data_o, " - " , ext_intf.data_o)
-                                ext_intf.done_o.next = sdram_mod1.done_o
-                                in_read.next = 0
+                                #print("OK_DECODING ", n_data_o, " - " , ext_intf.data_o)
+                                ext_intf.done_o.next = True
+
+                        #if evaluate_recode: 
+                            #print("RECODE 1",  n_err,False, current_encode, -2 , iram_current_position)
+                        #else:
+                        
+                        
+                              
                 else:
                     ext_intf.done_o.next = sdram_mod1.done_o
                     #if in_read == 1:
                     #host_intf.data_o.next = ecc.decoder(sdram_mod1.done_o, current_encode)
                     #in_read.next = 0
+
+                            
+                        #sdram_mod1.wr_i.next = False
+            #a = 0
+
+               
  
         else:
             #RECODING MODE
@@ -265,9 +278,9 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                     sdram_mod2.rd_i.next = 0
                 #print(current_recoding_mode)
                 if sdram_mod1.done_o:
-                    #n_data_o = intbv(int(sdram_mod1.data_o))[WORD_DOUBLE_SIZE_WITH_ECC:]
+                    n_data_o = intbv(int(sdram_mod1.data_o))[WORD_DOUBLE_SIZE_WITH_ECC:]
                     #TODO AQUI
-                    n_data_o = intbv(1)[WORD_DOUBLE_SIZE_WITH_ECC:]
+                    #n_data_o = intbv(1)[WORD_DOUBLE_SIZE_WITH_ECC:]
                     if ecc.is_double_encode(recode_from_ecc):
                         n_data_o |= ( sdram_mod2.data_o << WORD_SIZE_WITH_ECC)
 
@@ -313,7 +326,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         recode_count.next = r_count
                     else:
                         """RECODING DONE"""
-                        ext_intf.data_o.next = recode_original_data
+                        #ext_intf.data_o.next = recode_original_data
                         #sdram_mod1.data_o.next = recode_original_data
                         ext_intf.done_o.next = True
                         current_operation_mode.next = OPERATION_MODE.NORMAL
