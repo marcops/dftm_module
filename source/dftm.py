@@ -3,7 +3,7 @@ from dftm_ram import *
 from clk_driver import clk_driver
 from sdram import *
 from sdram_cntl import *
-from ecc import *
+from ecc_64 import *
 from ext_intf import *
 from definitions import *
 from enum import Enum
@@ -44,6 +44,9 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
     @always(clk_i.posedge)
     def main():        
         current_time.next = current_time + 1
+        if current_time % cycle_size == 0:
+            evaluate_recode.next = True
+
         if current_operation_mode == OPERATION_MODE.NORMAL:
             if ext_intf.dftm_i:
                 if ext_intf.bf_i == 0:
@@ -82,8 +85,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                     ext_intf.data_o_ecc.next = sdram_mod1.data_o
             else:
                 #memory SDRAM
-                if current_time % cycle_size == 0:
-                    evaluate_recode.next = True
+                
 
                 iram_current_position = dftm_ram.get_position(ext_intf.addr_i, dftm_iram_page_size)
                 #print("RECODE 1.a ", ext_intf.addr_i)
@@ -139,7 +141,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         
                       
                         if decode_ok == False:
-                            n_err = dftm_ram.get_count_error(ram_inf)
+                            n_err = int(dftm_ram.get_count_error(ram_inf))
                         #err Verilog here
                             n_err = n_err + error_increase
                             if n_err > 31:
@@ -150,8 +152,8 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                         #debug only
                         if  evaluate_recode == False:
                             #debug
-                            n_err = dftm_ram.get_count_error(ram_inf)
-                            print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
+                            n_err = int(dftm_ram.get_count_error(ram_inf))
+                            #print("RECODE", now(),  n_err, current_encode, current_encode, iram_current_position)
 
                             ext_intf.recoded_o.next = False
                             ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
@@ -162,7 +164,7 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                             processed = False
                             for block_position in range(IRAM_ADDR_AMOUNT):
                                 is_dynamic = dftm_ram.get_configuration(ram_inf)
-                                n_err = dftm_ram.get_count_error(ram[block_position])
+                                n_err = int(dftm_ram.get_count_error(ram[block_position]))
                                 current_encode = dftm_ram.get_encode(ram[block_position])
                                 n_err = n_err - error_decrease_by_cycle
                                 if n_err < 0:
@@ -185,10 +187,11 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                                     
                                     
                                 recode = (next_encode != current_encode and is_dynamic == 1)
+                                print("RECODE", int(current_time), n_err, current_encode, next_encode, block_position)
 
                                 if recode and processed == False: 
-                                    n_err = dftm_ram.get_count_error(ram_inf)
-                                    print("RECODE 1",  n_err,True, current_encode, next_encode, block_position)
+                                    n_err = int(dftm_ram.get_count_error(ram_inf))
+                                    
                                     processed = True
                                     #position_change = block_position
                                     #print("recoding ", block_position)
@@ -224,8 +227,8 @@ def dftm(clk_i, ext_intf, sdram_mod1, sdram_mod2, dftm_iram_page_size = 2000,
                                     if ecc.is_double_encode(current_encode):
                                         sdram_mod2.rd_i.next = False
                             if processed == False:
-                                n_err = dftm_ram.get_count_error(ram_inf)
-                                print("RECODE 1",  n_err,False, current_encode, current_encode, iram_current_position)
+                                n_err = int(dftm_ram.get_count_error(ram_inf))
+                                
 
                                 ext_intf.recoded_o.next = False
                                 ext_intf.data_o.next = ecc.decode(n_data_o, current_encode)
